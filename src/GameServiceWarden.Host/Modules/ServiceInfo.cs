@@ -22,7 +22,7 @@ namespace GameServiceWarden.Host.Modules
         /// </summary>
         private volatile string serviceName; //thread-safe(?)
         public Stream ServiceConsoleStream { get; private set; } // Thread safe.
-        private object controlLock = new object();
+        private readonly object controlLock = new object();
         private volatile ServiceState state;
         private readonly IGameService service;
         private readonly string assemblyName;
@@ -32,7 +32,7 @@ namespace GameServiceWarden.Host.Modules
 
         public ServiceInfo(IGameService service, string moduleName, string assemblyName)
         {
-            this.service = service ?? throw new ArgumentNullException("serviceable");
+            this.service = service ?? throw new ArgumentNullException("service");
             this.moduleName = moduleName ?? throw new ArgumentNullException("moduleName");
             this.assemblyName = assemblyName ?? throw new ArgumentNullException("assemblyName");
             this.service.StateChangeEvent += OnServiceStateChange;

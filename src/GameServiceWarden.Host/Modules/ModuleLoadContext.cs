@@ -6,7 +6,7 @@ namespace GameServiceWarden.Host.Modules
 {
     class ModuleLoadContext : AssemblyLoadContext
     {
-        private AssemblyDependencyResolver dependencyResolver;
+        private readonly AssemblyDependencyResolver dependencyResolver;
 
         public ModuleLoadContext(string path) {
             dependencyResolver = new AssemblyDependencyResolver(path);

@@ -6,7 +6,7 @@ namespace GameServiceWarden.Host.Modules
 {
     public class ServiceGateway
     {
-        private string dataDirectory;
+        private readonly string dataDirectory;
         private const string SERVICE_NAME = "Service Name";
         private const string ASSEMBLY_NAME = "Assembly Name";
         private const string MODULE_NAME = "Module Name";
