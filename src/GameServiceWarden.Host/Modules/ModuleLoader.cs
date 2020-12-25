@@ -34,16 +34,6 @@ namespace GameServiceWarden.Host.Modules
             return res;
         }
 
-        /// <summary>
-        /// Loads all module for each given path to modules file.
-        /// </summary>
-        /// <param name="paths">The paths to load modules for.</param>
-        /// <returns>A <see cref="Dictionary{string, IEnumerable{IGameServiceModule}}"/> where the key is a <see cref="string"/> that is the associated path.</returns>
-        public Dictionary<string, IEnumerable<IGameServiceModule>> LoadAllModules(params string[] paths)
-        {
-            return LoadAllModules(paths);
-        }
-
         private Assembly loadAssembly(string path)
         {
             ModuleLoadContext moduleLoadContext = new ModuleLoadContext(path);
