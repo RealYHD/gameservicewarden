@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace GameServiceWarden.Host.Logging
 {
     public class Logger {
-        private HashSet<ILogReceiver> listeners = new HashSet<ILogReceiver>();
+        private readonly HashSet<ILogReceiver> listeners = new HashSet<ILogReceiver>();
 
         /// <summary>
         /// Logs the message to listeners that are listening to the set severity of the message or greater.
@@ -39,8 +39,12 @@ namespace GameServiceWarden.Host.Logging
         /// <summary>
         /// Called when all listeners should perform any flushing they need.
         /// </summary>
-        public static void FlushListeners() {
-
+        public void FlushListeners()
+        {
+            foreach (ILogReceiver listener in listeners)
+            {
+                listener.Flush();
+            }
         }
     }
 }
