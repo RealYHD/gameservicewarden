@@ -27,7 +27,7 @@ namespace GameServiceWarden.Host.Modules
         private readonly IGameService service;
         private readonly string assemblyName;
         private readonly string moduleName;
-        private readonly Dictionary<string, IConfigurable> configurables = new Dictionary<string, IConfigurable>();
+        private readonly IReadOnlyDictionary<string, IConfigurable> configurables;
         private bool disposed;
 
         public ServiceInfo(IGameService service, string moduleName, string assemblyName)
@@ -37,10 +37,12 @@ namespace GameServiceWarden.Host.Modules
             this.assemblyName = assemblyName ?? throw new ArgumentNullException("assemblyName");
             this.service.StateChangeEvent += OnServiceStateChange;
 
+            Dictionary<string, IConfigurable> configurables = new Dictionary<string, IConfigurable>();
             foreach (IConfigurable configurable in service.Configurables)
             {
                 configurables.Add(configurable.OptionName, configurable);
             }
+            this.configurables = new ReadOnlyDictionary<string, IConfigurable>(configurables);
         }
 
         /// <summary>
@@ -91,12 +93,24 @@ namespace GameServiceWarden.Host.Modules
         }
 
         /// <summary>
-        /// Gets the possible <see cref="IConfigurable"/>'s for this service.
+        /// Gets the possible <see cref="IConfigurable"/>'s names for this service.
         /// </summary>
-        /// <returns>A <see cref="IReadOnlyDictionary{string, IConfigurable}"/> is returned where the string is the option name and the configurable is what handles actually changing the values.</returns>
-        public IReadOnlyDictionary<string, IConfigurable> GetConfigurables()
+        /// <returns>A <see cref="ISet{string}"/> returned where the string is the option's name.</returns>
+        public ISet<string> GetConfigurableOptions()
         {
-            return new ReadOnlyDictionary<string, IConfigurable>(this.configurables);
+            return new HashSet<string>(this.configurables.Keys);
+        }
+
+        public bool SetConfigurableValue(string configurationName, string value)
+        {
+            if (!this.configurables.ContainsKey(configurationName)) throw new KeyNotFoundException($"Unable to find option with name \"{configurationName}\".");
+            return this.configurables[configurationName].SetValue(value);
+        }
+
+        public string GetConfigurableValue(string configurationName)
+        {
+            if (!this.configurables.ContainsKey(configurationName)) throw new KeyNotFoundException($"Unable to find option with name \"{configurationName}\".");
+            return this.configurables[configurationName].GetValue();
         }
 
         /// <returns>The <see cref="ServiceState"/> that this service is currently in.</returns>

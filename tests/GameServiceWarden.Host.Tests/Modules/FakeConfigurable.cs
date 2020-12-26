@@ -5,7 +5,12 @@ namespace GameServiceWarden.Host.Tests.Modules
     public class FakeConfigurable : IConfigurable
     {
         private string value;
-        public string OptionName => "FakeOption";
+        public string OptionName { get; private set; }
+
+        public FakeConfigurable(string optionName)
+        {
+            this.OptionName = optionName;
+        }
 
         public string GetValue()
         {

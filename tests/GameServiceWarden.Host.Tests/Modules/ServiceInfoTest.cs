@@ -36,20 +36,34 @@ namespace GameServiceWarden.Host.Tests.Modules
         }
 
         [Fact]
-        public void GetConfigurables_ServiceStopped_ReturnsConfigurables()
+        public void GetConfigurableOptions_ServiceStopped_ReturnsConfigurables()
         {
             //Given
             FakeService stubService = new FakeService();
-            FakeConfigurable stubConfigurable = new FakeConfigurable();
+            FakeConfigurable stubConfigurable = new FakeConfigurable("Option");
+            HashSet<IConfigurable> configurables = new HashSet<IConfigurable>();
+            configurables.Add(stubConfigurable);
+            stubService.Configurables = configurables;
+            ServiceInfo serviceInfo = new ServiceInfo(stubService, "FakeModule", "FakeAssembly");
+            //Then
+            Assert.Contains<string>(stubConfigurable.OptionName, serviceInfo.GetConfigurableOptions());
+            serviceInfo.Dispose();
+        }
+
+        [Fact]
+        public void SetAndGetConfigurationValue_ServiceStopped_AppropriateValueReturned()
+        {
+            //Given
+            FakeService stubService = new FakeService();
+            FakeConfigurable stubConfigurable = new FakeConfigurable("Option");
             HashSet<IConfigurable> configurables = new HashSet<IConfigurable>();
             configurables.Add(stubConfigurable);
             stubService.Configurables = configurables;
             ServiceInfo serviceInfo = new ServiceInfo(stubService, "FakeModule", "FakeAssembly");
             //When
-            serviceInfo.Start();
+            serviceInfo.SetConfigurableValue(stubConfigurable.OptionName, "success");
             //Then
-            Assert.Contains(stubConfigurable, serviceInfo.GetConfigurables().Values);
-            serviceInfo.Dispose();
+            Assert.Equal<string>("success", serviceInfo.GetConfigurableValue(stubConfigurable.OptionName));
         }
 
         [Fact]
