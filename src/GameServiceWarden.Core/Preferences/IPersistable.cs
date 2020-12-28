@@ -1,4 +1,4 @@
-namespace GameServiceWarden.Host.Preferences
+namespace GameServiceWarden.Core.Preferences
 {
     public interface IPersistable
     {

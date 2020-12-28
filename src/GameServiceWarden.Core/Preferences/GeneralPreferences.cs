@@ -4,7 +4,7 @@ using System.Net;
 using System.Reflection;
 using System.Xml.Serialization;
 
-namespace GameServiceWarden.Host.Preferences
+namespace GameServiceWarden.Core.Preferences
 {
     [Serializable]
     public class GeneralPreferences : IPersistable

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using GameServiceWarden.ModuleAPI;
 
-namespace GameServiceWarden.Host.Tests.Modules
+namespace GameServiceWarden.Core.Tests.Modules.Games
 {
     public class FakeGameServiceModule : IGameServiceModule
     {
@@ -9,8 +9,8 @@ namespace GameServiceWarden.Host.Tests.Modules
 
         public string Description => "A fake module for testing.";
 
-        private IConfigurable[] configurables;
-        public FakeGameServiceModule(params IConfigurable[] configurables)
+        private IGameConfigurable[] configurables;
+        public FakeGameServiceModule(params IGameConfigurable[] configurables)
         {
             this.configurables = configurables;
         }
@@ -19,7 +19,7 @@ namespace GameServiceWarden.Host.Tests.Modules
 
         public IGameService CreateGameService()
         {
-            return new FakeService(configurables);
+            return new FakeGameService(configurables);
         }
     }
 }

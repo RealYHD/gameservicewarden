@@ -1,6 +1,6 @@
 using System;
 
-namespace GameServiceWarden.Host.Logging
+namespace GameServiceWarden.Core.Logging
 {
     public class FileLogReceiver : ILogReceiver
     {

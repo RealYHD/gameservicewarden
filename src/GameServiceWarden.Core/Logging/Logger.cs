@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GameServiceWarden.Host.Logging
+namespace GameServiceWarden.Core.Logging
 {
     public class Logger {
         private readonly HashSet<ILogReceiver> listeners = new HashSet<ILogReceiver>();

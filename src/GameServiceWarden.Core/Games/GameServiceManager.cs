@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using GameServiceWarden.ModuleAPI;
 
-namespace GameServiceWarden.Host.Modules
+namespace GameServiceWarden.Core.Games
 {
-    public class ServiceManager
+    public class GameServiceManager
     {
-        private readonly Dictionary<string, ServiceInfo> services = new Dictionary<string, ServiceInfo>();
+        private readonly Dictionary<string, GameServiceInfo> services = new Dictionary<string, GameServiceInfo>();
         private readonly Dictionary<string, Dictionary<string, IGameServiceModule>> modules = new Dictionary<string, Dictionary<string, IGameServiceModule>>();
 
         public void AddModule(string assemblyName, IGameServiceModule module)
@@ -44,7 +44,7 @@ namespace GameServiceWarden.Host.Modules
             if (!modules.ContainsKey(assemblyName) || !modules[assemblyName].ContainsKey(moduleName)) throw new KeyNotFoundException($"No module registered from \"{assemblyName}\" named \"{moduleName}\".");
             if (services.ContainsKey(serviceName)) throw new ArgumentException($"Service of Name \"{serviceName}\" already exists.");
 
-            services.Add(serviceName, new ServiceInfo(modules[assemblyName][moduleName].CreateGameService(), moduleName, assemblyName));
+            services.Add(serviceName, new GameServiceInfo(modules[assemblyName][moduleName].CreateGameService(), moduleName, assemblyName));
         }
 
         public void DeleteService(string serviceName)
@@ -64,7 +64,7 @@ namespace GameServiceWarden.Host.Modules
         public IEnumerable<string> GetServiceOptions(string serviceName)
         {
             if (!services.ContainsKey(serviceName)) throw new KeyNotFoundException($"Service under name \"{serviceName}\" not found.");
-            ServiceInfo serviceInfo = services[serviceName];
+            GameServiceInfo serviceInfo = services[serviceName];
             return serviceInfo.GetConfigurableOptions();
         }
 

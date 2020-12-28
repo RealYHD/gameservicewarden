@@ -1,4 +1,4 @@
-namespace GameServiceWarden.Host.Logging
+namespace GameServiceWarden.Core.Logging
 {
     public enum LogLevel
     {

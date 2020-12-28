@@ -1,24 +1,24 @@
 using System.Collections.Generic;
 using System.IO;
-using GameServiceWarden.Host.Modules;
+using GameServiceWarden.Core.Games;
 using GameServiceWarden.ModuleAPI;
 using Xunit;
 
-namespace GameServiceWarden.Host.Tests.Modules
+namespace GameServiceWarden.Core.Tests.Modules.Games
 {
     // Testing convention from: https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
     // Fakes are generic test objects, 
     // mocks are the objects being asserted upon, 
     // stubs are objects used as part of the test.
-    public class ServiceInfoTest
+    public class GameServiceInfoTest
     {
         //MethodTested_ScenarioTested_ExpectedBehavior
         [Fact]
         public void Start_FromStopped_StateIsRunning()
         {
             //Arrange, Act, Assert
-            IGameService stubGameService = new FakeService();
-            ServiceInfo serviceInfo = new ServiceInfo(stubGameService, "FakeModule", "FakeAssembly");
+            IGameService stubGameService = new FakeGameService();
+            GameServiceInfo serviceInfo = new GameServiceInfo(stubGameService, "FakeModule", "FakeAssembly");
             serviceInfo.Start();
             Assert.Equal(ServiceState.Running, serviceInfo.GetServiceState());
             serviceInfo.Dispose();
@@ -27,8 +27,8 @@ namespace GameServiceWarden.Host.Tests.Modules
         [Fact]
         public void Stop_FromStart_Stopped()
         {
-            IGameService stubService = new FakeService();
-            ServiceInfo serviceInfo = new ServiceInfo(stubService, "FakeModule", "FakeAssembly");
+            IGameService stubService = new FakeGameService();
+            GameServiceInfo serviceInfo = new GameServiceInfo(stubService, "FakeModule", "FakeAssembly");
             serviceInfo.Start();
             serviceInfo.Stop();
             Assert.Equal(ServiceState.Stopped, serviceInfo.GetServiceState());
@@ -39,12 +39,12 @@ namespace GameServiceWarden.Host.Tests.Modules
         public void GetConfigurableOptions_ServiceStopped_ReturnsConfigurables()
         {
             //Given
-            FakeService stubService = new FakeService();
-            FakeConfigurable stubConfigurable = new FakeConfigurable("Option");
-            HashSet<IConfigurable> configurables = new HashSet<IConfigurable>();
+            FakeGameService stubService = new FakeGameService();
+            FakeGameConfigurable stubConfigurable = new FakeGameConfigurable("Option");
+            HashSet<IGameConfigurable> configurables = new HashSet<IGameConfigurable>();
             configurables.Add(stubConfigurable);
             stubService.Configurables = configurables;
-            ServiceInfo serviceInfo = new ServiceInfo(stubService, "FakeModule", "FakeAssembly");
+            GameServiceInfo serviceInfo = new GameServiceInfo(stubService, "FakeModule", "FakeAssembly");
             //Then
             Assert.Contains<string>(stubConfigurable.OptionName, serviceInfo.GetConfigurableOptions());
             serviceInfo.Dispose();
@@ -54,12 +54,12 @@ namespace GameServiceWarden.Host.Tests.Modules
         public void SetAndGetConfigurationValue_ServiceStopped_AppropriateValueReturned()
         {
             //Given
-            FakeService stubService = new FakeService();
-            FakeConfigurable stubConfigurable = new FakeConfigurable("Option");
-            HashSet<IConfigurable> configurables = new HashSet<IConfigurable>();
+            FakeGameService stubService = new FakeGameService();
+            FakeGameConfigurable stubConfigurable = new FakeGameConfigurable("Option");
+            HashSet<IGameConfigurable> configurables = new HashSet<IGameConfigurable>();
             configurables.Add(stubConfigurable);
             stubService.Configurables = configurables;
-            ServiceInfo serviceInfo = new ServiceInfo(stubService, "FakeModule", "FakeAssembly");
+            GameServiceInfo serviceInfo = new GameServiceInfo(stubService, "FakeModule", "FakeAssembly");
             //When
             serviceInfo.SetConfigurableValue(stubConfigurable.OptionName, "success");
             //Then
@@ -70,8 +70,8 @@ namespace GameServiceWarden.Host.Tests.Modules
         public void GetServiceState_ServiceNotStarted_ReturnsStoppedState()
         {
             //Given
-            IGameService stubService = new FakeService();
-            ServiceInfo serviceInfo = new ServiceInfo(stubService, "FakeModule", "FakeAssembly");
+            IGameService stubService = new FakeGameService();
+            GameServiceInfo serviceInfo = new GameServiceInfo(stubService, "FakeModule", "FakeAssembly");
             //Then
             Assert.Equal(ServiceState.Stopped, serviceInfo.GetServiceState());
             serviceInfo.Dispose();
@@ -81,8 +81,8 @@ namespace GameServiceWarden.Host.Tests.Modules
         public void GetServiceState_ServiceStarted_ReturnsRunningState()
         {
             //Given
-            IGameService stubService = new FakeService();
-            ServiceInfo serviceInfo = new ServiceInfo(stubService, "FakeModule", "FakeAssembly");
+            IGameService stubService = new FakeGameService();
+            GameServiceInfo serviceInfo = new GameServiceInfo(stubService, "FakeModule", "FakeAssembly");
             //When
             serviceInfo.Start();
             //Then
@@ -95,8 +95,8 @@ namespace GameServiceWarden.Host.Tests.Modules
         {
             //Given
             const string MODULE_NAME = "FakeModule";
-            IGameService stubService = new FakeService();
-            ServiceInfo serviceInfo = new ServiceInfo(stubService, MODULE_NAME, "FakeAssembly");
+            IGameService stubService = new FakeGameService();
+            GameServiceInfo serviceInfo = new GameServiceInfo(stubService, MODULE_NAME, "FakeAssembly");
             //Then
             Assert.Equal(MODULE_NAME, serviceInfo.GetModuleName());
             serviceInfo.Dispose();
@@ -107,8 +107,8 @@ namespace GameServiceWarden.Host.Tests.Modules
         {
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
-            IGameService stubService = new FakeService();
-            ServiceInfo serviceInfo = new ServiceInfo(stubService, "FakeModule", ASSEMBLY_NAME);
+            IGameService stubService = new FakeGameService();
+            GameServiceInfo serviceInfo = new GameServiceInfo(stubService, "FakeModule", ASSEMBLY_NAME);
             //Then
             Assert.Equal(ASSEMBLY_NAME, serviceInfo.GetAssemblyName());
             serviceInfo.Dispose();
@@ -119,8 +119,8 @@ namespace GameServiceWarden.Host.Tests.Modules
         {
             //Given
             const string SERVICE_NAME = "Service";
-            IGameService stubService = new FakeService();
-            ServiceInfo serviceInfo = new ServiceInfo(stubService, "FakeModule", "FakeAssemblyName");
+            IGameService stubService = new FakeGameService();
+            GameServiceInfo serviceInfo = new GameServiceInfo(stubService, "FakeModule", "FakeAssemblyName");
             //When
             serviceInfo.ServiceName = SERVICE_NAME;
             //Then
@@ -132,8 +132,8 @@ namespace GameServiceWarden.Host.Tests.Modules
         public void ServiceConsoleStream_ServiceNotStarted_NullReturned()
         {
             //Given
-            IGameService stubService = new FakeService();
-            ServiceInfo serviceInfo = new ServiceInfo(stubService, "FakeModule", "FakeAssembly");
+            IGameService stubService = new FakeGameService();
+            GameServiceInfo serviceInfo = new GameServiceInfo(stubService, "FakeModule", "FakeAssembly");
             //Then
             Assert.Null(serviceInfo.ServiceConsoleStream);
             serviceInfo.Dispose();
@@ -143,8 +143,8 @@ namespace GameServiceWarden.Host.Tests.Modules
         public void ServiceConsoleStream_ServiceStarted_StreamReturned()
         {
             //Given
-            IGameService stubService = new FakeService();
-            ServiceInfo serviceInfo = new ServiceInfo(stubService, "FakeModule", "FakeAssembly");
+            IGameService stubService = new FakeGameService();
+            GameServiceInfo serviceInfo = new GameServiceInfo(stubService, "FakeModule", "FakeAssembly");
             //When
             serviceInfo.Start();
             //Then

@@ -7,7 +7,7 @@ namespace GameServiceWarden.ModuleAPI
     public interface IGameService
     {
         event EventHandler<ServiceState> StateChangeEvent;
-        IReadOnlyCollection<IConfigurable> Configurables{ get; }
+        IReadOnlyCollection<IGameConfigurable> Configurables{ get; }
         void InitializeService(TextWriter stream);
         void ElegantShutdown();
         void ExecuteCommand(string command);

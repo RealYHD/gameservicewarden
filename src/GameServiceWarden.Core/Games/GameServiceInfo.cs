@@ -4,12 +4,12 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Threading;
-using GameServiceWarden.Host.Preferences;
+using GameServiceWarden.Core.Preferences;
 using GameServiceWarden.ModuleAPI;
 
-namespace GameServiceWarden.Host.Modules
+namespace GameServiceWarden.Core.Games
 {
-    public class ServiceInfo : IDisposable //entity
+    public class GameServiceInfo : IDisposable //entity
     {
 
         /// <summary>
@@ -27,22 +27,22 @@ namespace GameServiceWarden.Host.Modules
         private readonly IGameService service;
         private readonly string assemblyName;
         private readonly string moduleName;
-        private readonly IReadOnlyDictionary<string, IConfigurable> configurables;
+        private readonly IReadOnlyDictionary<string, IGameConfigurable> configurables;
         private bool disposed;
 
-        public ServiceInfo(IGameService service, string moduleName, string assemblyName)
+        public GameServiceInfo(IGameService service, string moduleName, string assemblyName)
         {
             this.service = service ?? throw new ArgumentNullException("service");
             this.moduleName = moduleName ?? throw new ArgumentNullException("moduleName");
             this.assemblyName = assemblyName ?? throw new ArgumentNullException("assemblyName");
             this.service.StateChangeEvent += OnServiceStateChange;
 
-            Dictionary<string, IConfigurable> configurables = new Dictionary<string, IConfigurable>();
-            foreach (IConfigurable configurable in service.Configurables)
+            Dictionary<string, IGameConfigurable> configurables = new Dictionary<string, IGameConfigurable>();
+            foreach (IGameConfigurable configurable in service.Configurables)
             {
                 configurables.Add(configurable.OptionName, configurable);
             }
-            this.configurables = new ReadOnlyDictionary<string, IConfigurable>(configurables);
+            this.configurables = new ReadOnlyDictionary<string, IGameConfigurable>(configurables);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace GameServiceWarden.Host.Modules
         }
 
         /// <summary>
-        /// Gets the possible <see cref="IConfigurable"/>'s names for this service.
+        /// Gets the possible <see cref="IGameConfigurable"/>'s names for this service.
         /// </summary>
         /// <returns>A <see cref="ISet{string}"/> returned where the string is the option's name.</returns>
         public ISet<string> GetConfigurableOptions()

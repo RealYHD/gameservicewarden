@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/GameServiceWarden.Host/bin/Debug/netcoreapp3.1/GameServiceWarden.Host.dll",
+            "program": "${workspaceFolder}/src/GameServiceWarden.Core/bin/Debug/netcoreapp3.1/GameServiceWarden.Core.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/GameServiceWarden.Host",
+            "cwd": "${workspaceFolder}/src/GameServiceWarden.Core",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false

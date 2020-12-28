@@ -1,13 +1,13 @@
 using GameServiceWarden.ModuleAPI;
 
-namespace GameServiceWarden.Host.Tests.Modules
+namespace GameServiceWarden.Core.Tests.Modules.Games
 {
-    public class FakeConfigurable : IConfigurable
+    public class FakeGameConfigurable : IGameConfigurable
     {
         private string value;
         public string OptionName { get; private set; }
 
-        public FakeConfigurable(string optionName)
+        public FakeGameConfigurable(string optionName)
         {
             this.OptionName = optionName;
         }

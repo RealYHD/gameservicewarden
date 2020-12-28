@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GameServiceWarden.Host
+namespace GameServiceWarden.Core
 {
     class Program
     {

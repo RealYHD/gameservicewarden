@@ -1,10 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
-using GameServiceWarden.Host.Modules.Exceptions;
 
-namespace GameServiceWarden.Host.Modules
+namespace GameServiceWarden.Core.Games
 {
-    public class ServiceGateway
+    public class GameServiceGateway
     {
         private readonly string dataDirectory;
         private const string SERVICE_NAME = "Service Name";
@@ -12,7 +12,7 @@ namespace GameServiceWarden.Host.Modules
         private const string MODULE_NAME = "Module Name";
         private const string EXTENSION = ".sin"; //Service info
 
-        public ServiceGateway(string dataDirectory)
+        public GameServiceGateway(string dataDirectory)
         {
             if (!Directory.Exists(dataDirectory)) Directory.CreateDirectory(dataDirectory);
             this.dataDirectory = dataDirectory;
@@ -53,7 +53,8 @@ namespace GameServiceWarden.Host.Modules
                     return line.Substring(key.Length + 2);
                 }
             }
-            throw new CorruptedServiceInfoException($"\"{path}\" is corrupted. Could not find value for: {key}.");
+            
+            throw new FormatException($"\"{path}\" is corrupted. Could not find value for: {key}.");
 
         }
 

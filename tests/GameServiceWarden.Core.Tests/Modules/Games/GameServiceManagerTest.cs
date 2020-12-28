@@ -1,18 +1,18 @@
 using System.IO;
-using GameServiceWarden.Host.Modules;
+using GameServiceWarden.Core.Games;
 using GameServiceWarden.ModuleAPI;
 using Xunit;
 
-namespace GameServiceWarden.Host.Tests.Modules
+namespace GameServiceWarden.Core.Tests.Modules.Games
 {
-    public class ServiceManagerTest
+    public class GameServiceManagerTest
     {
         [Fact]
         public void AddModule_NewManager_SuccessfulAddition()
         {
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
-            ServiceManager serviceManager = new ServiceManager();
+            GameServiceManager serviceManager = new GameServiceManager();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             //When
             serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);
@@ -26,7 +26,7 @@ namespace GameServiceWarden.Host.Tests.Modules
         {
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
-            ServiceManager serviceManager = new ServiceManager();
+            GameServiceManager serviceManager = new GameServiceManager();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             //When
             serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);
@@ -41,7 +41,7 @@ namespace GameServiceWarden.Host.Tests.Modules
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "FakeService";
-            ServiceManager serviceManager = new ServiceManager();
+            GameServiceManager serviceManager = new GameServiceManager();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);
             //When
@@ -56,7 +56,7 @@ namespace GameServiceWarden.Host.Tests.Modules
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "FakeService";
-            ServiceManager serviceManager = new ServiceManager();
+            GameServiceManager serviceManager = new GameServiceManager();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubGameServiceModule.Name);
@@ -72,7 +72,7 @@ namespace GameServiceWarden.Host.Tests.Modules
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_PREFIX = "FakeService_";
-            ServiceManager serviceManager = new ServiceManager();
+            GameServiceManager serviceManager = new GameServiceManager();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             //When
             serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);
@@ -93,11 +93,11 @@ namespace GameServiceWarden.Host.Tests.Modules
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string SERVICE_NAME = "FakeService";
-            ServiceManager serviceManager = new ServiceManager();
+            GameServiceManager serviceManager = new GameServiceManager();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule(
-                new FakeConfigurable("A"),
-                new FakeConfigurable("B"),
-                new FakeConfigurable("C")
+                new FakeGameConfigurable("A"),
+                new FakeGameConfigurable("B"),
+                new FakeGameConfigurable("C")
             );
             //When
             serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);
@@ -114,9 +114,9 @@ namespace GameServiceWarden.Host.Tests.Modules
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string SERVICE_NAME = "FakeService";
-            ServiceManager serviceManager = new ServiceManager();
+            GameServiceManager serviceManager = new GameServiceManager();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule(
-                new FakeConfigurable("A")
+                new FakeGameConfigurable("A")
             );
             //When
             serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);
@@ -132,7 +132,7 @@ namespace GameServiceWarden.Host.Tests.Modules
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string SERVICE_NAME = "FakeService";
-            ServiceManager serviceManager = new ServiceManager();
+            GameServiceManager serviceManager = new GameServiceManager();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             //When
             serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);
@@ -147,7 +147,7 @@ namespace GameServiceWarden.Host.Tests.Modules
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string SERVICE_NAME = "FakeService";
-            ServiceManager serviceManager = new ServiceManager();
+            GameServiceManager serviceManager = new GameServiceManager();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             //When
             serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);
@@ -163,7 +163,7 @@ namespace GameServiceWarden.Host.Tests.Modules
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string SERVICE_NAME = "FakeService";
-            ServiceManager serviceManager = new ServiceManager();
+            GameServiceManager serviceManager = new GameServiceManager();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             //When
             serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);
@@ -179,7 +179,7 @@ namespace GameServiceWarden.Host.Tests.Modules
             //Given        
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string SERVICE_NAME = "FakeService";
-            ServiceManager serviceManager = new ServiceManager();
+            GameServiceManager serviceManager = new GameServiceManager();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             //When
             serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);
@@ -196,7 +196,7 @@ namespace GameServiceWarden.Host.Tests.Modules
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string SERVICE_NAME = "FakeService";
-            ServiceManager serviceManager = new ServiceManager();
+            GameServiceManager serviceManager = new GameServiceManager();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             //When
             serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);
@@ -218,7 +218,7 @@ namespace GameServiceWarden.Host.Tests.Modules
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string SERVICE_NAME = "FakeService";
-            ServiceManager serviceManager = new ServiceManager();
+            GameServiceManager serviceManager = new GameServiceManager();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             //When
             serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);

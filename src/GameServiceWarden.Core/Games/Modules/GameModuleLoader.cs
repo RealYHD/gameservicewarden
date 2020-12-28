@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using GameServiceWarden.Host.Modules.Exceptions;
+using GameServiceWarden.Core.Games.Modules.Exceptions;
 using GameServiceWarden.ModuleAPI;
 
-namespace GameServiceWarden.Host.Modules
+namespace GameServiceWarden.Core.Games.Modules
 {
-    public class ModuleLoader //Gateway
+    public class GameModuleLoader //Gateway
     {
         /// <summary>
         /// Loads an extension module.
@@ -36,7 +36,7 @@ namespace GameServiceWarden.Host.Modules
 
         private Assembly loadAssembly(string path)
         {
-            ModuleLoadContext moduleLoadContext = new ModuleLoadContext(path);
+            GameModuleLoadContext moduleLoadContext = new GameModuleLoadContext(path);
             return moduleLoadContext.LoadFromAssemblyPath(path);
         }
 
@@ -65,7 +65,7 @@ namespace GameServiceWarden.Host.Modules
                 }
                 string types = String.Join(',', typeNames);
 
-                throw new NoServiceableFoundException(
+                throw new ModuleLoadException(
                     $"No public classes in {assembly} from {assembly.Location} implemented {typeof(IGameService).FullName}." +
                     $"Detected types: {types}");
             }

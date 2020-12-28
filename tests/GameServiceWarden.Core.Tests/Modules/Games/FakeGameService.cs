@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using GameServiceWarden.ModuleAPI;
 
-namespace GameServiceWarden.Host.Tests.Modules
+namespace GameServiceWarden.Core.Tests.Modules.Games
 {
-    public class FakeService : IGameService
+    public class FakeGameService : IGameService
     {
-        public IReadOnlyCollection<IConfigurable> Configurables { get; set; }
+        public IReadOnlyCollection<IGameConfigurable> Configurables { get; set; }
 
         public event EventHandler<ServiceState> StateChangeEvent;
 
@@ -15,10 +15,10 @@ namespace GameServiceWarden.Host.Tests.Modules
 
         private TextWriter consoleStream;
 
-        public FakeService(params IConfigurable[] configurables)
+        public FakeGameService(params IGameConfigurable[] configurables)
         {
-            HashSet<IConfigurable> modifiable = new HashSet<IConfigurable>();
-            foreach (IConfigurable configurable in configurables)
+            HashSet<IGameConfigurable> modifiable = new HashSet<IGameConfigurable>();
+            foreach (IGameConfigurable configurable in configurables)
             {
                 modifiable.Add(configurable);
             }

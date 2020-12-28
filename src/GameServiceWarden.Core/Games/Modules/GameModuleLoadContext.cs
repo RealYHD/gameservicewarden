@@ -2,13 +2,13 @@ using System;
 using System.Reflection;
 using System.Runtime.Loader;
 
-namespace GameServiceWarden.Host.Modules
+namespace GameServiceWarden.Core.Games.Modules
 {
-    class ModuleLoadContext : AssemblyLoadContext
+    class GameModuleLoadContext : AssemblyLoadContext
     {
         private readonly AssemblyDependencyResolver dependencyResolver;
 
-        public ModuleLoadContext(string path) {
+        public GameModuleLoadContext(string path) {
             dependencyResolver = new AssemblyDependencyResolver(path);
         }
 

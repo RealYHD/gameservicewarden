@@ -1,6 +1,6 @@
 namespace GameServiceWarden.ModuleAPI
 {
-    public interface IConfigurable
+    public interface IGameConfigurable
     {
         string OptionName { get; }
         bool SetValue(string value);
