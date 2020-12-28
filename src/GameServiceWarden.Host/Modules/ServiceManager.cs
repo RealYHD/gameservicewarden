@@ -47,6 +47,13 @@ namespace GameServiceWarden.Host.Modules
             services.Add(serviceName, new ServiceInfo(modules[assemblyName][moduleName].CreateGameService(), moduleName, assemblyName));
         }
 
+        public void DeleteService(string serviceName)
+        {
+            if (!services.ContainsKey(serviceName)) throw new KeyNotFoundException($"Service under name \"{serviceName}\" not found.");
+            if (services[serviceName].GetServiceState() == ServiceState.Running) services[serviceName].Stop();
+            services.Remove(serviceName);
+        }
+
         public IReadOnlyCollection<string> GetServiceNames()
         {
             string[] names = new string[services.Count];

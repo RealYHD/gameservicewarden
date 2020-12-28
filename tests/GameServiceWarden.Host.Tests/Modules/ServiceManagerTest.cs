@@ -51,6 +51,22 @@ namespace GameServiceWarden.Host.Tests.Modules
         }
 
         [Fact]
+        public void CreateService_OneService_ServiceDeleted()
+        {
+            //Given
+            const string ASSEMBLY_NAME = "FakeAssembly";
+            const string FAKE_SERVICE_NAME = "FakeService";
+            ServiceManager serviceManager = new ServiceManager();
+            IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
+            serviceManager.AddModule(ASSEMBLY_NAME, stubGameServiceModule);
+            serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubGameServiceModule.Name);
+            //When
+            serviceManager.DeleteService(FAKE_SERVICE_NAME);
+            //Then
+            Assert.DoesNotContain<string>(FAKE_SERVICE_NAME, serviceManager.GetServiceNames());
+        }
+
+        [Fact]
         public void GetServiceNames_MultipleServices_AllCorrectNames()
         {
             //Given
