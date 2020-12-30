@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Threading;
-using GameServiceWarden.Core.Preferences;
 using GameServiceWarden.ModuleAPI;
 
 namespace GameServiceWarden.Core.Games

@@ -21,5 +21,10 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
         {
             return new FakeGameService(configurables);
         }
+
+        public IGameService InstantiateGameService(string workspace, bool clean)
+        {
+            return new FakeGameService(configurables);
+        }
     }
 }
