@@ -25,14 +25,18 @@ namespace GameServiceWarden.Core.Games
         private volatile ServiceState state;
         private readonly IGameService service;
         private readonly string assemblyName;
-        private readonly string moduleName;
+
+        /// <summary>
+        /// Name of module this service uses.
+        /// </summary>
+        public string ModuleName { get; private set; }
         private readonly IReadOnlyDictionary<string, IGameConfigurable> configurables;
         private bool disposed;
 
         public GameServiceInfo(IGameService service, string moduleName, string assemblyName)
         {
             this.service = service ?? throw new ArgumentNullException("service");
-            this.moduleName = moduleName ?? throw new ArgumentNullException("moduleName");
+            this.ModuleName = moduleName ?? throw new ArgumentNullException("moduleName");
             this.assemblyName = assemblyName ?? throw new ArgumentNullException("assemblyName");
             this.service.StateChangeEvent += OnServiceStateChange;
 
@@ -119,12 +123,6 @@ namespace GameServiceWarden.Core.Games
             {
                 return state;
             }
-        }
-
-        /// <returns>The name of the module this service uses.</returns>
-        public string GetModuleName()
-        {
-            return moduleName;
         }
 
         /// <returns>The name of assembly this module is contained in.</returns>

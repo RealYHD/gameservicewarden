@@ -6,7 +6,7 @@ using GameServiceWarden.ModuleAPI;
 
 namespace GameServiceWarden.Core.Games.Modules
 {
-    public class GameModuleLoader //Gateway
+    public class GameServiceModuleLoader //Gateway
     {
         /// <summary>
         /// Loads an extension module.

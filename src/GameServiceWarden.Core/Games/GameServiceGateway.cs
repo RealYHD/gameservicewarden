@@ -55,7 +55,6 @@ namespace GameServiceWarden.Core.Games
             }
             
             throw new FormatException($"\"{path}\" is corrupted. Could not find value for: {key}.");
-
         }
 
         public IEnumerable<string> GetAllServiceInfoPaths()

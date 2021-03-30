@@ -8,22 +8,24 @@ namespace GameServiceWarden.Core.Games
 {
     public class GameServiceManager
     {
+        private readonly IDictionary<string, GameServiceInfo> running;
         private readonly IPersistentDictionary<GameServiceInfo> services;
-        private readonly IReadOnlyPersistentDictionary<IGameServiceModule> modules;
+        private readonly IReadOnlyPersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> modules;
 
-        public GameServiceManager(IPersistentDictionary<GameServiceInfo> services, IReadOnlyPersistentDictionary<IGameServiceModule> modules)
+        public GameServiceManager(IPersistentDictionary<GameServiceInfo> services, IReadOnlyPersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> modules)
         {
             this.services = services;
             this.modules = modules;
+            this.running = new Dictionary<string, GameServiceInfo>();
         }
 
         public void CreateService(string serviceName, string assemblyName, string moduleName)
         {
-            string moduleID = ToModuleID(assemblyName, moduleName);
-            if (!modules.ContainsKey(moduleID)) throw new KeyNotFoundException($"No module registered from \"{assemblyName}\" named \"{moduleName}\".");
+            if (!this.modules.ContainsKey(assemblyName)) throw new KeyNotFoundException($"No file \"{assemblyName}\" found.");
+            IReadOnlyDictionary<string, IGameServiceModule> modules = this.modules[assemblyName];
             if (services.ContainsKey(serviceName)) throw new ArgumentException($"Service of Name \"{serviceName}\" already exists.");
 
-            services.Add(serviceName, new GameServiceInfo(modules[moduleID].InstantiateGameService(services.GetPathForKey(serviceName), true), moduleName, assemblyName));
+            services.Add(serviceName, new GameServiceInfo(modules[moduleName].InstantiateGameService(services.GetPathForKey(serviceName), true), moduleName, assemblyName));
         }
 
         public void DeleteService(string serviceName)
@@ -75,30 +77,29 @@ namespace GameServiceWarden.Core.Games
         public void StartService(string serviceName)
         {
             if (!services.ContainsKey(serviceName)) throw new KeyNotFoundException($"Service under name \"{serviceName}\" not found.");
-            services[serviceName].Start();
+            if (running.ContainsKey(serviceName)) throw new InvalidOperationException($"Service under name \"{serviceName}\" is already running.");
+            running.Add(serviceName, services[serviceName]);
+            running[serviceName].Start();
         }
 
         public void StopService(string serviceName)
         {
-            if (!services.ContainsKey(serviceName)) throw new KeyNotFoundException($"Service under name \"{serviceName}\" not found.");
-            services[serviceName].Stop();
+            if (!running.ContainsKey(serviceName)) throw new InvalidOperationException($"Service under name \"{serviceName}\" is not running.");
+            running[serviceName].Stop();
+            services[serviceName] = running[serviceName];
+            running.Remove(serviceName);
         }
 
         public void ExecuteCommand(string serviceName, string command)
         {
-            if (!services.ContainsKey(serviceName)) throw new KeyNotFoundException($"Service under name \"{serviceName}\" not found.");
-            services[serviceName].ExecuteCommand(command);
+            if (!running.ContainsKey(serviceName)) throw new InvalidOperationException($"Service under name \"{serviceName}\" is not running.");
+            running[serviceName].ExecuteCommand(command);
         }
 
         public Stream GetServiceConsoleStream(string serviceName)
         {
-            if (!services.ContainsKey(serviceName)) throw new KeyNotFoundException($"Service under name \"{serviceName}\" not found.");
-            return services[serviceName].ServiceConsoleStream;
-        }
-
-        private string ToModuleID(string assemblyName, string moduleName)
-        {
-            return assemblyName + Path.DirectorySeparatorChar + moduleName;
+            if (!running.ContainsKey(serviceName)) throw new InvalidOperationException($"Service under name \"{serviceName}\" is not running.");
+            return running[serviceName].ServiceConsoleStream;
         }
     }
 }

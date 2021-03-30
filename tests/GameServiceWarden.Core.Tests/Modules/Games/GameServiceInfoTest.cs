@@ -7,7 +7,7 @@ using Xunit;
 namespace GameServiceWarden.Core.Tests.Modules.Games
 {
     // Testing convention from: https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
-    // Fakes are generic test objects, 
+    // fakes are generic test objects, 
     // mocks are the objects being asserted upon, 
     // stubs are objects used as part of the test.
     public class GameServiceInfoTest
@@ -63,7 +63,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //When
             serviceInfo.SetConfigurableValue(stubConfigurable.OptionName, "success");
             //Then
-            Assert.Equal<string>("success", serviceInfo.GetConfigurableValue(stubConfigurable.OptionName));
+            Assert.True("success".Equals(serviceInfo.GetConfigurableValue(stubConfigurable.OptionName)));
         }
 
         [Fact]
@@ -98,7 +98,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             IGameService stubService = new FakeGameService();
             GameServiceInfo serviceInfo = new GameServiceInfo(stubService, MODULE_NAME, "FakeAssembly");
             //Then
-            Assert.Equal(MODULE_NAME, serviceInfo.GetModuleName());
+            Assert.Equal(MODULE_NAME, serviceInfo.ModuleName);
             serviceInfo.Dispose();
         }
 
@@ -124,7 +124,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //When
             serviceInfo.ServiceName = SERVICE_NAME;
             //Then
-            Assert.Equal(SERVICE_NAME, serviceInfo.ServiceName);
+            Assert.True(SERVICE_NAME.Equals(serviceInfo.ServiceName));
             serviceInfo.Dispose();
         }
 
