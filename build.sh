@@ -1,3 +1,3 @@
 #!/bin/bash
-dotnet build src/GameServiceWarden.ModuleAPI
-dotnet build src/GameServiceWarden.Core
+dotnet build -v d src/GameServiceWarden.ModuleAPI
+dotnet build -v d src/GameServiceWarden.Core
