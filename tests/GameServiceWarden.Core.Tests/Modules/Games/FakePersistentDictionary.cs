@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using GameServiceWarden.Core.Games;
 using GameServiceWarden.Core.Persistence;
 
 namespace GameServiceWarden.Core.Tests.Modules
 {
-    public class FakePersistentDictionary<V> : IPersistentDictionary<V>, IReadOnlyPersistentDictionary<V>
+    public class FakePersistentDictionary<V> : IPersistent<V>
     {
         private IDictionary<string, V> backing = new Dictionary<string, V>();
         public V this[string key] { get { return backing[key]; } set { backing[key] = value; } }
@@ -21,9 +22,9 @@ namespace GameServiceWarden.Core.Tests.Modules
 
         public bool IsReadOnly { get { return false; } }
 
-        IEnumerable<string> IReadOnlyDictionary<string, V>.Keys { get { return backing.Keys; } }
+        IEnumerable<V> IReadOnlyPersistent<V>.Values => backing.Values;
 
-        IEnumerable<V> IReadOnlyDictionary<string, V>.Values { get { return backing.Values; } }
+        IEnumerable<string> IReadOnlyPersistent<V>.Keys => backing.Keys;
 
         public void Add(string key, V value)
         {
@@ -35,24 +36,19 @@ namespace GameServiceWarden.Core.Tests.Modules
             backing.Add(item);
         }
 
+        public void Add(string key, GameServiceInfo value)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void Clear()
         {
             backing.Clear();
         }
 
-        public bool Contains(KeyValuePair<string, V> item)
-        {
-            return backing.Contains(item);
-        }
-
         public bool ContainsKey(string key)
         {
             return backing.ContainsKey(key);
-        }
-
-        public void CopyTo(KeyValuePair<string, V>[] array, int arrayIndex)
-        {
-            backing.CopyTo(array, arrayIndex);
         }
 
         public IEnumerator<KeyValuePair<string, V>> GetEnumerator()

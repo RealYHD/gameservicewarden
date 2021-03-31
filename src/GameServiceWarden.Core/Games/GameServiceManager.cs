@@ -9,10 +9,10 @@ namespace GameServiceWarden.Core.Games
     public class GameServiceManager
     {
         private readonly IDictionary<string, GameServiceInfo> running;
-        private readonly IPersistentDictionary<GameServiceInfo> services;
-        private readonly IReadOnlyPersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> modules;
+        private readonly IPersistent<GameServiceInfo> services;
+        private readonly IReadOnlyPersistent<IReadOnlyDictionary<string, IGameServiceModule>> modules;
 
-        public GameServiceManager(IPersistentDictionary<GameServiceInfo> services, IReadOnlyPersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> modules)
+        public GameServiceManager(IPersistent<GameServiceInfo> services, IReadOnlyPersistent<IReadOnlyDictionary<string, IGameServiceModule>> modules)
         {
             this.services = services;
             this.modules = modules;
@@ -40,11 +40,9 @@ namespace GameServiceWarden.Core.Games
             return modules.Keys;
         }
 
-        public IReadOnlyCollection<string> GetServiceNames()
+        public IEnumerable<string> GetServiceNames()
         {
-            string[] names = new string[services.Count];
-            services.Keys.CopyTo(names, 0);
-            return names;
+            return services.Keys;
         }
 
         public IEnumerable<string> GetServiceOptions(string serviceName)

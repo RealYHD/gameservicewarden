@@ -8,13 +8,13 @@ using GameServiceWarden.ModuleAPI;
 
 namespace GameServiceWarden.Core.Persistence
 {
-    public class GameServiceModuleDictionary : IReadOnlyPersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>>
+    public class GameServiceModules : IReadOnlyPersistent<IReadOnlyDictionary<string, IGameServiceModule>>
     {
         private readonly string mapDirectory;
 
         private readonly GameServiceModuleLoader loader = new GameServiceModuleLoader();
 
-        public GameServiceModuleDictionary(string mapDirectory)
+        public GameServiceModules(string mapDirectory)
         {
             this.mapDirectory = mapDirectory;
         }
