@@ -40,12 +40,12 @@ namespace GameServiceWarden.Core.Games
             this.assemblyName = assemblyName ?? throw new ArgumentNullException("assemblyName");
             this.service.StateChangeEvent += OnServiceStateChange;
 
-            Dictionary<string, IGameConfigurable> configurables = new Dictionary<string, IGameConfigurable>();
+            Dictionary<string, IGameConfigurable> tempConfigurables = new Dictionary<string, IGameConfigurable>();
             foreach (IGameConfigurable configurable in service.Configurables)
             {
-                configurables.Add(configurable.OptionName, configurable);
+                tempConfigurables.Add(configurable.OptionName, configurable);
             }
-            this.configurables = new ReadOnlyDictionary<string, IGameConfigurable>(configurables);
+            this.configurables = new ReadOnlyDictionary<string, IGameConfigurable>(tempConfigurables);
         }
 
         /// <summary>

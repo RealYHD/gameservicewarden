@@ -22,10 +22,10 @@ namespace GameServiceWarden.Core.Games
         public void CreateService(string serviceName, string assemblyName, string moduleName)
         {
             if (!this.modules.ContainsKey(assemblyName)) throw new KeyNotFoundException($"No file \"{assemblyName}\" found.");
-            IReadOnlyDictionary<string, IGameServiceModule> modules = this.modules[assemblyName];
+            IReadOnlyDictionary<string, IGameServiceModule> assemblyModules = this.modules[assemblyName];
             if (services.ContainsKey(serviceName)) throw new ArgumentException($"Service of Name \"{serviceName}\" already exists.");
 
-            services.Add(serviceName, new GameServiceInfo(modules[moduleName].InstantiateGameService(services.GetPathForKey(serviceName), true), moduleName, assemblyName));
+            services.Add(serviceName, new GameServiceInfo(assemblyModules[moduleName].InstantiateGameService(services.GetPathForKey(serviceName), true), moduleName, assemblyName));
         }
 
         public void DeleteService(string serviceName)
