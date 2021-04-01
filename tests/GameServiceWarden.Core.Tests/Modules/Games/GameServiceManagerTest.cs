@@ -22,7 +22,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             stubAssemblyModulesDictionary.Add(stubGameServiceModule.Name, stubGameServiceModule);
-            stubPersistentModuleDictionary.Add(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
+            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
             //When
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubGameServiceModule.Name);
             //Then
@@ -41,7 +41,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             stubAssemblyModulesDictionary.Add(stubGameServiceModule.Name, stubGameServiceModule);
-            stubPersistentModuleDictionary.Add(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
+            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
             //When
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubGameServiceModule.Name);
             serviceManager.DeleteService(FAKE_SERVICE_NAME);
@@ -61,7 +61,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             stubAssemblyModulesDictionary.Add(stubGameServiceModule.Name, stubGameServiceModule);
-            stubPersistentModuleDictionary.Add(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
+            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
             //When
             for (int i = 0; i < 100; i++)
             {
@@ -90,7 +90,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
                 new FakeGameConfigurable("C")
             );
             stubAssemblyModulesDictionary.Add(stubGameServiceModule.Name, stubGameServiceModule);
-            stubPersistentModuleDictionary.Add(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
+            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
             //When
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubGameServiceModule.Name);
             //Then
@@ -112,7 +112,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
                 new FakeGameConfigurable("A")
             );
             stubAssemblyModulesDictionary.Add(stubGameServiceModule.Name, stubGameServiceModule);
-            stubPersistentModuleDictionary.Add(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
+            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
             //When
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubGameServiceModule.Name);
             serviceManager.SetServiceOptionValue(FAKE_SERVICE_NAME, "A", "Test");
@@ -132,7 +132,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             stubAssemblyModulesDictionary.Add(stubGameServiceModule.Name, stubGameServiceModule);
-            stubPersistentModuleDictionary.Add(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
+            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
             //When
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubGameServiceModule.Name);
             //Then
@@ -151,7 +151,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             stubAssemblyModulesDictionary.Add(stubGameServiceModule.Name, stubGameServiceModule);
-            stubPersistentModuleDictionary.Add(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
+            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
             //When
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubGameServiceModule.Name);
             serviceManager.StartService(FAKE_SERVICE_NAME);
@@ -171,7 +171,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             stubAssemblyModulesDictionary.Add(stubGameServiceModule.Name, stubGameServiceModule);
-            stubPersistentModuleDictionary.Add(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
+            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
             //When
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubGameServiceModule.Name);
             serviceManager.StartService(FAKE_SERVICE_NAME);
@@ -191,7 +191,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             stubAssemblyModulesDictionary.Add(stubGameServiceModule.Name, stubGameServiceModule);
-            stubPersistentModuleDictionary.Add(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
+            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
             //When
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubGameServiceModule.Name);
             serviceManager.StartService(FAKE_SERVICE_NAME);
@@ -212,7 +212,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             stubAssemblyModulesDictionary.Add(stubGameServiceModule.Name, stubGameServiceModule);
-            stubPersistentModuleDictionary.Add(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
+            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
             //When
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubGameServiceModule.Name);
             serviceManager.StartService(FAKE_SERVICE_NAME);
@@ -238,7 +238,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
             stubAssemblyModulesDictionary.Add(stubGameServiceModule.Name, stubGameServiceModule);
-            stubPersistentModuleDictionary.Add(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
+            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
             //When
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubGameServiceModule.Name);
             //Then

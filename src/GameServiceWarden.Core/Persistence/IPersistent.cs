@@ -7,8 +7,8 @@ namespace GameServiceWarden.Core.Persistence
     {
         new V this[string key] { get; set; }
 
-        void Add(string key, V value);
+        void AddToPersistence(string key, V value);
         void Clear();
-        bool Remove(string key);
+        bool Delete(string key);
     }
 }

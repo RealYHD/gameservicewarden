@@ -106,7 +106,7 @@ namespace GameServiceWarden.Core.Persistence
             return mapDirectory + Path.DirectorySeparatorChar + key;
         }
 
-        public bool TryGetValue(string key, [MaybeNullWhen(false)] out IReadOnlyDictionary<string, IGameServiceModule> value)
+        public bool TryLoadValue(string key, [MaybeNullWhen(false)] out IReadOnlyDictionary<string, IGameServiceModule> value)
         {
             try
             {

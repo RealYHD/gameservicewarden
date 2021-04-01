@@ -25,14 +25,14 @@ namespace GameServiceWarden.Core.Games
             IReadOnlyDictionary<string, IGameServiceModule> assemblyModules = this.modules[assemblyName];
             if (services.ContainsKey(serviceName)) throw new ArgumentException($"Service of Name \"{serviceName}\" already exists.");
 
-            services.Add(serviceName, new GameServiceInfo(assemblyModules[moduleName].InstantiateGameService(services.GetPathForKey(serviceName), true), moduleName, assemblyName));
+            services.AddToPersistence(serviceName, new GameServiceInfo(assemblyModules[moduleName].InstantiateGameService(services.GetPathForKey(serviceName), true), moduleName, assemblyName));
         }
 
         public void DeleteService(string serviceName)
         {
             if (!services.ContainsKey(serviceName)) throw new KeyNotFoundException($"Service under name \"{serviceName}\" not found.");
             if (services[serviceName].GetServiceState() == ServiceState.Running) services[serviceName].Stop();
-            services.Remove(serviceName);
+            services.Delete(serviceName);
         }
 
         public IEnumerable<string> GetModuleNames()

@@ -26,7 +26,7 @@ namespace GameServiceWarden.Core.Tests.Modules
 
         IEnumerable<string> IReadOnlyPersistent<V>.Keys => backing.Keys;
 
-        public void Add(string key, V value)
+        public void AddToPersistence(string key, V value)
         {
             backing.Add(key, value);
         }
@@ -61,7 +61,7 @@ namespace GameServiceWarden.Core.Tests.Modules
             return MapDirectory + Path.DirectorySeparatorChar + key;
         }
 
-        public bool Remove(string key)
+        public bool Delete(string key)
         {
             return backing.Remove(key);
         }
@@ -71,7 +71,7 @@ namespace GameServiceWarden.Core.Tests.Modules
             return backing.Remove(item);
         }
 
-        public bool TryGetValue(string key, [MaybeNullWhen(false)] out V value)
+        public bool TryLoadValue(string key, [MaybeNullWhen(false)] out V value)
         {
             return backing.TryGetValue(key, out value);
         }

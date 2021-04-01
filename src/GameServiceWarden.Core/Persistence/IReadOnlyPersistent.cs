@@ -24,6 +24,6 @@ namespace GameServiceWarden.Core.Persistence
         /// <param name="key">The key to get the path for.</param>
         /// <returns>A <see cref="string"/> representing the key.</returns>
         string GetPathForKey(string key);
-        bool TryGetValue(string key, [MaybeNullWhen(false)] out V value);
+        bool TryLoadValue(string key, [MaybeNullWhen(false)] out V value);
     }
 }
