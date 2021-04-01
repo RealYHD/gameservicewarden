@@ -17,11 +17,6 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
 
         public IEnumerable<string> Authors { get; private set; } = new string[] { "FakeAuthor", "FakeAuthor2" };
 
-        public IGameService CreateGameService()
-        {
-            return new FakeGameService(configurables);
-        }
-
         public IGameService InstantiateGameService(string workspace, bool clean)
         {
             return new FakeGameService(configurables);

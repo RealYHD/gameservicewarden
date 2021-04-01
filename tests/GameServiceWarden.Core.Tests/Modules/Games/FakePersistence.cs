@@ -7,7 +7,7 @@ using GameServiceWarden.Core.Persistence;
 
 namespace GameServiceWarden.Core.Tests.Modules
 {
-    public class FakePersistentDictionary<V> : IPersistent<V>
+    public class FakePersistence<V> : IPersistent<V>
     {
         private IDictionary<string, V> backing = new Dictionary<string, V>();
         public V this[string key] { get { return backing[key]; } set { backing[key] = value; } }

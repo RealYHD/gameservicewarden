@@ -16,8 +16,8 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "FakeService";
-            FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>>();
-            FakePersistentDictionary<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistentDictionary<GameServiceInfo>();
+            FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>>();
+            FakePersistence<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistence<GameServiceInfo>();
             GameServiceManager serviceManager = new GameServiceManager(stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
@@ -35,8 +35,8 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "FakeService";
-            FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>>();
-            FakePersistentDictionary<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistentDictionary<GameServiceInfo>();
+            FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>>();
+            FakePersistence<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistence<GameServiceInfo>();
             GameServiceManager serviceManager = new GameServiceManager(stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
@@ -55,8 +55,8 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_PREFIX = "FakeService_";
-            FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>>();
-            FakePersistentDictionary<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistentDictionary<GameServiceInfo>();
+            FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>>();
+            FakePersistence<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistence<GameServiceInfo>();
             GameServiceManager serviceManager = new GameServiceManager(stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
@@ -80,8 +80,8 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "FakeService";
-            FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>>();
-            FakePersistentDictionary<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistentDictionary<GameServiceInfo>();
+            FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>>();
+            FakePersistence<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistence<GameServiceInfo>();
             GameServiceManager serviceManager = new GameServiceManager(stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule(
@@ -104,8 +104,8 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
         {
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "FakeService";
-            FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>>();
-            FakePersistentDictionary<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistentDictionary<GameServiceInfo>();
+            FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>>();
+            FakePersistence<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistence<GameServiceInfo>();
             GameServiceManager serviceManager = new GameServiceManager(stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule(
@@ -126,8 +126,8 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "FakeService";
-            FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>>();
-            FakePersistentDictionary<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistentDictionary<GameServiceInfo>();
+            FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>>();
+            FakePersistence<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistence<GameServiceInfo>();
             GameServiceManager serviceManager = new GameServiceManager(stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
@@ -145,8 +145,8 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "FakeService";
-            FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>>();
-            FakePersistentDictionary<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistentDictionary<GameServiceInfo>();
+            FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>>();
+            FakePersistence<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistence<GameServiceInfo>();
             GameServiceManager serviceManager = new GameServiceManager(stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
@@ -165,8 +165,8 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "FakeService";
-            FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>>();
-            FakePersistentDictionary<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistentDictionary<GameServiceInfo>();
+            FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>>();
+            FakePersistence<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistence<GameServiceInfo>();
             GameServiceManager serviceManager = new GameServiceManager(stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
@@ -185,8 +185,8 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //Given        
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "FakeService";
-            FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>>();
-            FakePersistentDictionary<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistentDictionary<GameServiceInfo>();
+            FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>>();
+            FakePersistence<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistence<GameServiceInfo>();
             GameServiceManager serviceManager = new GameServiceManager(stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
@@ -206,8 +206,8 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "FakeService";
-            FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>>();
-            FakePersistentDictionary<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistentDictionary<GameServiceInfo>();
+            FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>>();
+            FakePersistence<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistence<GameServiceInfo>();
             GameServiceManager serviceManager = new GameServiceManager(stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
@@ -232,8 +232,8 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "FakeService";
-            FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistentDictionary<IReadOnlyDictionary<string, IGameServiceModule>>();
-            FakePersistentDictionary<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistentDictionary<GameServiceInfo>();
+            FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IGameServiceModule>>();
+            FakePersistence<GameServiceInfo> stubPersistentServiceDictionary = new FakePersistence<GameServiceInfo>();
             GameServiceManager serviceManager = new GameServiceManager(stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IGameServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IGameServiceModule>();
             IGameServiceModule stubGameServiceModule = new FakeGameServiceModule();
