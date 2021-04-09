@@ -33,9 +33,11 @@ namespace GameServiceWarden.Core.UI
         public void Open()
         {
             if (active) throw new InvalidOperationException("IPC already opened.");
+            Logger.Log($"IPCMediator with name \"{name}\" opened.");
             active = true;
             stopAcceptingToken = new CancellationTokenSource();
             acceptTask = AcceptConnections();
+            Logger.Log($"IPCMediator \"{name}\" has begun asynchronously accepting interfaces.", LogLevel.DEBUG);
         }
 
         public void Close()
