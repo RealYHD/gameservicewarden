@@ -143,10 +143,10 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
         }
 
         [Fact]
-        public void ServiceLogPipeName_ServiceNotStarted_NullReturned()
+        public void ServiceLogPipeName_ServiceNotStarted_PipeNameReturned()
         {
             //Given
-            const string SERVICE_NAME = "ServiceLogPipeName_ServiceNotStarted_NullReturned";
+            const string SERVICE_NAME = "ServiceLogPipeName_ServiceNotStarted_PipeNameReturned";
             IService stubService = new FakeService();
             ServiceDescriptor serviceInfo = new ServiceDescriptor(stubService, SERVICE_NAME, "FakeModule", "FakeAssembly");
             //Then

@@ -185,11 +185,11 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
         }
 
         [Fact]
-        public void StopService_Stopped_StateUpdated()
+        public void StopService_ServiceStartedThenStopped_StateUpdated()
         {
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
-            const string FAKE_SERVICE_NAME = "StopService_Stopped_StateUpdated";
+            const string FAKE_SERVICE_NAME = "StopService_ServiceStartedThenStopped_StateUpdated";
             FakePersistence<IReadOnlyDictionary<string, IServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IServiceModule>>();
             FakePersistence<ServiceDescriptor> stubPersistentServiceDictionary = new FakePersistence<ServiceDescriptor>();
             FakeServiceManagerMonitor stubMonitor = new FakeServiceManagerMonitor();
