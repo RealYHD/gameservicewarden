@@ -23,7 +23,11 @@ namespace GameServiceWarden.Core.Tests
 
         public void LogMessage(string message, DateTime time, LogLevel level)
         {
-            outputHelper.WriteLine($"[{time.ToShortTimeString()}][{level.ToString()}]: {message}");
+            try
+            {
+                outputHelper.WriteLine($"[{time.ToShortTimeString()}][{level.ToString()}]: {message}");
+            }
+            catch (InvalidOperationException) { };
         }
     }
 }
