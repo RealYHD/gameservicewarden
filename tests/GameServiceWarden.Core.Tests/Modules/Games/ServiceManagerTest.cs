@@ -10,6 +10,7 @@ using GameServiceWarden.API.Module;
 using Xunit;
 using Xunit.Abstractions;
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace GameServiceWarden.Core.Tests.Modules.Games
 {
     [CollectionDefinition("Service")]
