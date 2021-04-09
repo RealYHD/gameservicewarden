@@ -80,7 +80,8 @@ namespace GameServiceWarden.Core.Games
             ValueTask sendTokenTask = logSender.WriteAsync(idToken);
             byte[] receivedToken = new byte[idToken.Length];
             logReceiver.Read(receivedToken);
-            if (!sendTokenTask.IsCompletedSuccessfully) {
+            
+            if (!sendTokenTask.AsTask().Wait(500) || !sendTokenTask.IsCompletedSuccessfully) {
                 throw new ServiceInitializationException("Error while sending identification token.");
             }
             if (!idToken.SequenceEqual(receivedToken)) {
