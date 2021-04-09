@@ -183,7 +183,7 @@ namespace GameServiceWarden.Core.Games
                     break;
                 case false:
                     ServiceDescriptor removed;
-                    if (running.Remove(serviceInfo.ServiceName, out removed)) {
+                    if (running.TryRemove(serviceInfo.ServiceName, out removed)) {
                         removed.ServiceStateChangeEvent -= OnServiceStateChange;
                         services[serviceInfo.ServiceName] = removed;
                         managerChange.delta = true;
