@@ -34,6 +34,7 @@ namespace GameServiceWarden.Core.UI
         {
             if (active) throw new InvalidOperationException("IPC already opened.");
             active = true;
+            stopAcceptingToken = new CancellationTokenSource();
             acceptTask = AcceptConnections();
         }
 
@@ -266,7 +267,7 @@ namespace GameServiceWarden.Core.UI
             }
             Logger.Log($"Pipe for interface \"{identifier}\" has closed.", LogLevel.DEBUG);
             (NamedPipeServerStream, Task) removedPipe;
-            pipes.Remove(identifier, out removedPipe);
+            pipes.TryRemove(identifier, out removedPipe);
             await removedPipe.Item1.DisposeAsync();
             Logger.Log($"Stopped listening to interface \"{identifier}\".", LogLevel.DEBUG);
         }
