@@ -1,11 +1,18 @@
 using System;
+using GameServiceWarden.Core.Logging;
 using GameServiceWarden.Core.UI;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace GameServiceWarden.Core.Tests.UI
 {
     public class IPCMediatorTest
     {
+        public IPCMediatorTest(ITestOutputHelper output)
+        {
+            Logger.AddLogListener(new XUnitLogger(output));
+        }
+
         [Fact]
         public void Open_Closed_Opened()
         {
