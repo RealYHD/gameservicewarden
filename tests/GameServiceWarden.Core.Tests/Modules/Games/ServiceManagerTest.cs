@@ -15,14 +15,9 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
     [CollectionDefinition("Service")]
     public class ServiceManagerTest
     {
-        private readonly ITestOutputHelper output;
-        private readonly XUnitLogger logger;
-
         public ServiceManagerTest(ITestOutputHelper output)
         {
-            this.output = output;
-            logger = new XUnitLogger(output);
-            Logger.AddLogListener(logger);
+            Logger.AddLogListener(new XUnitLogger(output));
         }
 
         [Fact]
