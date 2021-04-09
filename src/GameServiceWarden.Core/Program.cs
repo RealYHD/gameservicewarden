@@ -6,7 +6,7 @@ namespace GameServiceWarden.Core
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            
         }
     }
 }

@@ -1,6 +1,6 @@
 namespace GameServiceWarden.Core.Logging
 {
-    public enum LogLevel
+    public enum LogLevel : int
     {
         FATAL,
         INFO,

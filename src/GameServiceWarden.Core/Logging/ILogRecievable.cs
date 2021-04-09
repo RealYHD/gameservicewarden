@@ -4,6 +4,8 @@ namespace GameServiceWarden.Core.Logging
 {
     public interface ILogReceiver
     {
+        string Identifier { get; }
+
         /// <summary>
         /// The severity of the messages this log should receive.
         /// </summary>

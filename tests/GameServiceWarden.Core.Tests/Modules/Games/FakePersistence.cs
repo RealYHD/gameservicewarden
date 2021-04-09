@@ -36,7 +36,7 @@ namespace GameServiceWarden.Core.Tests.Modules
             backing.Add(item);
         }
 
-        public void Add(string key, GameServiceInfo value)
+        public void Add(string key, ServiceDescriptor value)
         {
             throw new System.NotImplementedException();
         }
