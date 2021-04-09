@@ -104,10 +104,11 @@ namespace GameServiceWarden.Core.UI
         private async Task AcceptConnections()
         {
             List<Task> connectionTasks = new List<Task>();
-            Logger.Log("Accepting pipe connections.");
+            Logger.Log("Accepting Interface connections.");
             while (active)
             {
                 NamedPipeServerStream pipe = new NamedPipeServerStream(name, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+                Logger.Log("Waiting for connection.", LogLevel.DEBUG);
                 await pipe.WaitForConnectionAsync(stopAcceptingToken.Token);
                 connectionTasks.Add(OnConnection(pipe));
                 for (int i = 0; i < connectionTasks.Count; i++)
@@ -119,6 +120,7 @@ namespace GameServiceWarden.Core.UI
                     }
                 }
             }
+            Logger.Log("Waiting for connection tasks.", LogLevel.DEBUG);
             foreach (Task task in connectionTasks)
             {
                 task.Wait();
