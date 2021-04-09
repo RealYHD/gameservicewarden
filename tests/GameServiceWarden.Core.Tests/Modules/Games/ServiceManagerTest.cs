@@ -226,10 +226,11 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             Thread.Sleep(1000);
             //Then
             byte[] buffer = new byte[1024 * 8];
-            CancellationTokenSource cancelToken = new CancellationTokenSource();
+            CancellationTokenSource cancelToken = new CancellationTokenSource(2000);
             ValueTask<int> task = clientStream.ReadAsync(buffer, cancelToken.Token);
             Assert.False(task.AsTask().Wait(1000));
             serviceManager.StopService(FAKE_SERVICE_NAME);
+            cancelToken.Dispose();
         }
 
         [Fact]
@@ -258,11 +259,12 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //Then
             using (StreamReader reader = new StreamReader(clientStream))
             {
-                CancellationTokenSource cancelToken = new CancellationTokenSource();
+                CancellationTokenSource cancelToken = new CancellationTokenSource(2000);
                 string message = null;
                 Task task = Task.Run(() => message = reader.ReadLine(), cancelToken.Token);
                 Assert.True(task.Wait(1000));
                 Assert.True(COMMAND.Equals(message), $"Received message \"{message}\" when expecting \"{COMMAND}\"");
+                cancelToken.Dispose();
             }
             serviceManager.StopService(FAKE_SERVICE_NAME);
         }
@@ -299,11 +301,12 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             {
                 using (StreamReader reader = new StreamReader(clientStreams[i]))
                 {
-                    CancellationTokenSource cancelToken = new CancellationTokenSource();
+                    CancellationTokenSource cancelToken = new CancellationTokenSource(15000);
                     string message = null;
                     Task task = Task.Run(() => message = reader.ReadLine(), cancelToken.Token);
                     Assert.True(task.Wait(10000));
                     Assert.True(COMMAND.Equals(message), $"Received message \"{message}\" when expecting \"{COMMAND}\"");
+                    cancelToken.Dispose();
                 }
             }
             serviceManager.StopService(FAKE_SERVICE_NAME);
