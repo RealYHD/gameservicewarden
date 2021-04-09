@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace GameServiceWarden.Core.Logging
 {
     public static class Logger {
-        private static readonly Dictionary<string, ILogReceiver> listeners = new Dictionary<string, ILogReceiver>();
+        private static readonly ConcurrentDictionary<string, ILogReceiver> listeners = new ConcurrentDictionary<string, ILogReceiver>();
 
         /// <summary>
         /// Logs the message to listeners that are listening to the set severity of the message or greater.
@@ -33,7 +34,8 @@ namespace GameServiceWarden.Core.Logging
         /// </summary>
         /// <param name="listener">The listener to remove.</param>
         public static void RemoveLogListener(ILogReceiver listener) {
-            listeners.Remove(listener.Identifier);
+            ILogReceiver receiver;
+            listeners.TryRemove(listener.Identifier, out receiver);
         }
 
         /// <summary>
