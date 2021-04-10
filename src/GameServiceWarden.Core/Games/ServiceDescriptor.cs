@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using GameServiceWarden.Core.Games.Modules.Exceptions;
 using GameServiceWarden.Core.Logging;
 using GameServiceWarden.API.Module;
+using System.Net.Sockets;
 
 //TODO Update UML
 namespace GameServiceWarden.Core.Games
@@ -40,6 +41,7 @@ namespace GameServiceWarden.Core.Games
         private Task logUpdateTask;
         private Task acceptingTask;
         private volatile CancellationTokenSource stopToken;
+        private NamedPipeServerStream acceptingPipe;
 
         /// <summary>
         /// Name of module this service uses.
@@ -110,9 +112,11 @@ namespace GameServiceWarden.Core.Games
             if (!running) throw new InvalidOperationException("Service instance not running.");
             Logger.Log($"\"{ServiceName}\" is stopping.");
             service.ElegantShutdown();
-            stopToken.Cancel();
-            logSender.Close();
-            logReceiver.Close();
+            stopToken.Cancel(); // Doesn't work on Linux(?)
+            acceptingPipe.Close();
+            acceptingPipe.Dispose(); //Handles Linux case
+            logSender.Dispose(); //Makes sure logging client is disposed
+            logReceiver.Dispose(); //Closes receiver (Linux doesn't respond to cancellations, needed to dispose either way).
             try
             {
                 if (!acceptingTask.Wait(TIMEOUT)) {
@@ -121,7 +125,7 @@ namespace GameServiceWarden.Core.Games
             }
             catch (AggregateException e)
             {
-                e.Handle((exception) => exception is TaskCanceledException);
+                e.Handle((exception) => exception is TaskCanceledException || exception is SocketException); //Task cancel for Windows, Socket for operation cancellation.
             }
             try
             {
@@ -131,10 +135,12 @@ namespace GameServiceWarden.Core.Games
             }
             catch (AggregateException e)
             {
-                e.Handle((exception) => exception is TaskCanceledException);
+                e.Handle((exception) => exception is TaskCanceledException || exception is SocketException); //Same as above.
             }
-            logSender.Dispose();
-            logReceiver.Dispose();
+            foreach (NamedPipeServerStream pipe in logStreamListeners)
+            {
+                pipe.Dispose();
+            }
             logStreamListeners.Clear();
             stopToken.Dispose();
         }
@@ -206,6 +212,7 @@ namespace GameServiceWarden.Core.Games
             while (running)
             {
                 NamedPipeServerStream pipe = new NamedPipeServerStream(ServiceLogPipeName, PipeDirection.Out, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+                acceptingPipe = pipe;
                 await pipe.WaitForConnectionAsync(stopToken.Token);
                 Logger.Log($"A log listener has connected. Currently broadcasting to {logStreamListeners.Count + 1} listener(s).", LogLevel.DEBUG);
                 logStreamListeners.Push(pipe);
