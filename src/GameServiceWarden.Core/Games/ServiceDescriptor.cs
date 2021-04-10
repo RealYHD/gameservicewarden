@@ -110,9 +110,9 @@ namespace GameServiceWarden.Core.Games
             if (!running) throw new InvalidOperationException("Service instance not running.");
             Logger.Log($"\"{ServiceName}\" is stopping.");
             service.ElegantShutdown();
+            stopToken.Cancel();
             logSender.Close();
             logReceiver.Close();
-            stopToken.Cancel();
             try
             {
                 if (!acceptingTask.Wait(TIMEOUT)) {
