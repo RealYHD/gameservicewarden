@@ -204,7 +204,6 @@ namespace GameServiceWarden.Core.Games
         {
             switch (action.action)
             {
-                //TODO FINISH MOVING THIS!!!!
                 case ServiceManagerAction.Type.View:
                     GetServiceNames();
                     GetRunningServiceNames();

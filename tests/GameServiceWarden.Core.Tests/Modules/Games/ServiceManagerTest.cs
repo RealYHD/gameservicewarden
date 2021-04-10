@@ -302,15 +302,14 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             {
                 using (StreamReader reader = new StreamReader(clientStreams[i]))
                 {
-                    CancellationTokenSource cancelToken = new CancellationTokenSource(15000);
                     string message = null;
-                    Task task = Task.Run(() => message = reader.ReadLine(), cancelToken.Token);
-                    Assert.True(task.Wait(10000));
+                    Task clientTask = Task.Run(() => message = reader.ReadLine());
+                    Assert.True(clientTask.Wait(1000));
                     Assert.True(COMMAND.Equals(message), $"Received message \"{message}\" when expecting \"{COMMAND}\"");
-                    cancelToken.Dispose();
                 }
             }
-            serviceManager.StopService(FAKE_SERVICE_NAME);
+            Task task = Task.Run(() => serviceManager.StopService(FAKE_SERVICE_NAME));
+            Assert.True(task.Wait(5000)); //TODO FIX WHY THIS IS HAPPENING!!!!!
         }
 
         [Fact]

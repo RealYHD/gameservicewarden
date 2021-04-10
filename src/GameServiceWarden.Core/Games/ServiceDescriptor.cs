@@ -18,27 +18,28 @@ namespace GameServiceWarden.Core.Games
 {
     public class ServiceDescriptor //entity
     {
-        private const string DISTRIBUTOR_SUFFIX = "_dist";
-        private const int INIT_TIMEOUT = 1000;
+        private const string LOG_DISTRIBUTOR_PREFIX = "log_dist_";
+        private const int TIMEOUT = 1000;
         /// <summary>
         /// The name of the service itself, independent of the name of the module this service is using.
         /// </summary>
         public string ServiceName { get { return serviceName; } }
         private readonly string serviceName;
-        private bool running;
+        private readonly Guid runningUID;
+        private volatile bool running;
         private readonly IService service;
         /// <summary>
         /// The services log output pipe name.
         /// </summary>
-        public string ServiceLogPipeName { get { return (serviceName); } }
+        public string ServiceLogPipeName { get { return (runningUID.ToString() + ".pipe"); } }
         private string moduleName;
         private readonly string assemblyName;
-        private NamedPipeServerStream logReceiver;
-        private NamedPipeClientStream logSender;
+        private volatile NamedPipeServerStream logReceiver;
+        private volatile NamedPipeClientStream logSender;
         private ConcurrentStack<NamedPipeServerStream> logStreamListeners;
         private Task logUpdateTask;
         private Task acceptingTask;
-        private CancellationTokenSource stopToken;
+        private volatile CancellationTokenSource stopToken;
 
         /// <summary>
         /// Name of module this service uses.
@@ -52,6 +53,8 @@ namespace GameServiceWarden.Core.Games
             this.assemblyName = assemblyName ?? throw new ArgumentNullException("assemblyName");
             this.serviceName = serviceName ?? throw new ArgumentNullException("serviceName");
             this.service.StateChangeEvent += OnServiceStateChange;
+            runningUID = Guid.NewGuid();
+
 
             Dictionary<string, IServiceConfigurable> tempConfigurables = new Dictionary<string, IServiceConfigurable>();
             foreach (IServiceConfigurable configurable in service.Configurables)
@@ -71,23 +74,25 @@ namespace GameServiceWarden.Core.Games
         {
             Logger.Log($"\"{ServiceName}\" is starting.");
             if (running) throw new InvalidOperationException("Service instance already running.");
-            logReceiver = new NamedPipeServerStream(ServiceLogPipeName + DISTRIBUTOR_SUFFIX, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+            logReceiver = new NamedPipeServerStream(LOG_DISTRIBUTOR_PREFIX + ServiceLogPipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
             Task waitForConnection = logReceiver.WaitForConnectionAsync();
-            logSender = new NamedPipeClientStream(".", ServiceLogPipeName + DISTRIBUTOR_SUFFIX, PipeDirection.Out);
+            logSender = new NamedPipeClientStream(".", LOG_DISTRIBUTOR_PREFIX + ServiceLogPipeName, PipeDirection.Out);
             logSender.Connect();
             waitForConnection.Wait();
             byte[] idToken = Guid.NewGuid().ToByteArray();
             ValueTask sendTokenTask = logSender.WriteAsync(idToken);
             byte[] receivedToken = new byte[idToken.Length];
             logReceiver.Read(receivedToken);
-            
-            if (!sendTokenTask.AsTask().Wait(500) || !sendTokenTask.IsCompletedSuccessfully) {
+
+            if (!sendTokenTask.AsTask().Wait(500) || !sendTokenTask.IsCompletedSuccessfully)
+            {
                 throw new ServiceInitializationException("Error while sending identification token.");
             }
-            if (!idToken.SequenceEqual(receivedToken)) {
+            if (!idToken.SequenceEqual(receivedToken))
+            {
                 throw new ServiceInitializationException("Wrong distributor identification token.");
             }
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource(INIT_TIMEOUT);
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource(TIMEOUT);
             Task initializationTask = Task.Run(() => service.InitializeService(logSender), cancellationTokenSource.Token);
             initializationTask.Wait();
             cancellationTokenSource.Dispose();
@@ -102,18 +107,27 @@ namespace GameServiceWarden.Core.Games
         /// <exception cref="InvalidOperationException">Is thrown when the is not running.</exception>
         public void Stop()
         {
-            Logger.Log("\"{ServiceName}\" is stopping.");
             if (!running) throw new InvalidOperationException("Service instance not running.");
+            Logger.Log($"\"{ServiceName}\" is stopping.");
             service.ElegantShutdown();
+            logSender.Close();
+            logReceiver.Close();
             stopToken.Cancel();
-            try {
-                acceptingTask.Wait();
-            } catch (AggregateException e) {
+            try
+            {
+                if (!acceptingTask.Wait(TIMEOUT)) {
+                    throw new TimeoutException($"Could not stop \"{ServiceName}\" accepting task within {TIMEOUT}ms.");
+                }
+            }
+            catch (AggregateException e)
+            {
                 e.Handle((exception) => exception is TaskCanceledException);
             }
             try
             {
-                logUpdateTask.Wait();
+                if (!logUpdateTask.Wait(TIMEOUT)) {
+                    throw new TimeoutException($"Could not stop \"{ServiceName}\" broadcast within{TIMEOUT}ms.");
+                }
             }
             catch (AggregateException e)
             {
@@ -163,11 +177,13 @@ namespace GameServiceWarden.Core.Games
             return running;
         }
 
-        public string GetServiceName() {
+        public string GetServiceName()
+        {
             return serviceName;
         }
 
-        public string GetModuleName() {
+        public string GetModuleName()
+        {
             return moduleName;
         }
 
@@ -180,7 +196,7 @@ namespace GameServiceWarden.Core.Games
         private void OnServiceStateChange(object sender, bool running)
         {
             this.running = running;
-            Logger.Log($"{ServiceName}'s state changed to {(running ? "running" : "stopped")}.", LogLevel.DEBUG);
+            Logger.Log($"The service \"{ServiceName}\" is changing states to {(running ? "running" : "stopped")}.", LogLevel.DEBUG);
             ServiceStateChangeEvent?.Invoke(this, running);
         }
 
@@ -197,22 +213,26 @@ namespace GameServiceWarden.Core.Games
             Logger.Log($"\"{ServiceName}\" stopped accepting log listeners.");
         }
 
-        private async Task BroadcastLog() {
+        private async Task BroadcastLog()
+        {
             Stack<NamedPipeServerStream> completeStack = new Stack<NamedPipeServerStream>();
             Stack<(Task, CancellationTokenSource)> writeTasks = new Stack<(Task, CancellationTokenSource)>();
             byte[] buffer = new byte[1024 * 8];
             int fill;
             Logger.Log($"\"{ServiceName}\" is now listening to the service log and broadcasting.");
-            while ((fill = await logReceiver.ReadAsync(buffer, 0, buffer.Length, stopToken.Token)) > 0)
+            while (running && (fill = await logReceiver.ReadAsync(buffer, 0, buffer.Length, stopToken.Token)) > 0)
             {
                 Logger.Log($"Broadcasting {fill} bytes.", LogLevel.DEBUG);
                 NamedPipeServerStream pipe;
                 while (logStreamListeners.TryPop(out pipe))
                 {
-                    if (!pipe.IsConnected) {
+                    if (!pipe.IsConnected)
+                    {
                         pipe.Dispose();
                         Logger.Log($"\"{ServiceName}\" detected a disconnected log listener. Removing from list of listener(s).", LogLevel.DEBUG);
-                    } else {
+                    }
+                    else
+                    {
                         CancellationTokenSource cancelToken = new CancellationTokenSource(1000);
                         writeTasks.Push((pipe.WriteAsync(buffer, 0, fill, cancelToken.Token), cancelToken));
                         completeStack.Push(pipe);
@@ -224,7 +244,8 @@ namespace GameServiceWarden.Core.Games
                     logStreamListeners.Push(completePipe);
                 }
                 (Task, CancellationTokenSource) taskAndCancel;
-                while (writeTasks.TryPop(out taskAndCancel)) {
+                while (writeTasks.TryPop(out taskAndCancel))
+                {
                     await taskAndCancel.Item1;
                     taskAndCancel.Item2.Dispose();
                 }

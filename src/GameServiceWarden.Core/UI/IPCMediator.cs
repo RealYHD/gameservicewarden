@@ -15,7 +15,8 @@ namespace GameServiceWarden.Core.UI
 {
     public class IPCMediator
     {
-        private const int CONNECT_TIMEOUT = 1000;
+        private const int TIMEOUT = 1000;
+        public string PipeName {get { return name + ".pipe"; } }
         private readonly string name;
         private readonly ConcurrentDictionary<string, (NamedPipeServerStream, Task)> pipes;
         public BlockingCollection<(string, CommunicableType, byte[])> RequestQueue { get; private set; }
@@ -48,7 +49,7 @@ namespace GameServiceWarden.Core.UI
             stopAcceptingToken.Cancel();
             try
             {
-                acceptTask.Wait();
+                if (!acceptTask.Wait(TIMEOUT)) throw new TimeoutException($"IPCMediator \"{name}\" was unable to stop accepting task within {TIMEOUT}ms.");
             }
             catch (AggregateException e)
             {
@@ -109,7 +110,7 @@ namespace GameServiceWarden.Core.UI
             Logger.Log("Accepting Interface connections.");
             while (active)
             {
-                NamedPipeServerStream pipe = new NamedPipeServerStream(name, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+                NamedPipeServerStream pipe = new NamedPipeServerStream(PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
                 Logger.Log("Waiting for connection.", LogLevel.DEBUG);
                 await pipe.WaitForConnectionAsync(stopAcceptingToken.Token);
                 connectionTasks.Add(OnConnection(pipe));
@@ -135,7 +136,7 @@ namespace GameServiceWarden.Core.UI
             Logger.Log("Interface attempting to connect.", LogLevel.DEBUG);
             byte[] headerBuffer = new byte[sizeof(uint) * 2];
             int headerFill = 0;
-            CancellationTokenSource headerCancel = new CancellationTokenSource(CONNECT_TIMEOUT);
+            CancellationTokenSource headerCancel = new CancellationTokenSource(TIMEOUT);
             try
             {
                 int readLength;
@@ -148,7 +149,7 @@ namespace GameServiceWarden.Core.UI
             catch (AggregateException e)
             {
                 e.Handle((exception) => exception is TaskCanceledException);
-                Logger.Log($"Interface did not send header data within {CONNECT_TIMEOUT}ms.", LogLevel.DEBUG);
+                Logger.Log($"Interface did not send header data within {TIMEOUT}ms.", LogLevel.DEBUG);
             } finally {
                 await pipe.DisposeAsync();
                 headerCancel.Dispose();
@@ -164,7 +165,7 @@ namespace GameServiceWarden.Core.UI
 
             byte[] bodyBuffer = new byte[bodyLength];
             int bodyFill = 0;
-            CancellationTokenSource bodyCancel = new CancellationTokenSource(CONNECT_TIMEOUT);
+            CancellationTokenSource bodyCancel = new CancellationTokenSource(TIMEOUT);
             try
             {
                 int readLength = 0;
@@ -177,7 +178,7 @@ namespace GameServiceWarden.Core.UI
             catch (AggregateException e)
             {
                 e.Handle((exception) => exception is TaskCanceledException);
-                Logger.Log($"Interface failed to send body data within {CONNECT_TIMEOUT}.", LogLevel.DEBUG);
+                Logger.Log($"Interface failed to send body data within {TIMEOUT}.", LogLevel.DEBUG);
             } finally {
                 await pipe.DisposeAsync();
                 bodyCancel.Dispose();
@@ -204,7 +205,7 @@ namespace GameServiceWarden.Core.UI
                 requestAccepted = true;
                 response.identifier = request.requestedIdentifier;
             }
-            CancellationTokenSource cancelResponse = new CancellationTokenSource(CONNECT_TIMEOUT);
+            CancellationTokenSource cancelResponse = new CancellationTokenSource(TIMEOUT);
             try
             {
                 await pipe.WriteAsync(JsonSerializer.SerializeToUtf8Bytes(response), cancelResponse.Token);                    
@@ -212,7 +213,7 @@ namespace GameServiceWarden.Core.UI
             catch (AggregateException e)
             {
                 e.Handle((exception) => exception is TaskCanceledException);
-                Logger.Log($"Interface did not receive response within {CONNECT_TIMEOUT}ms.", LogLevel.DEBUG);
+                Logger.Log($"Interface did not receive response within {TIMEOUT}ms.", LogLevel.DEBUG);
             }
             if (!requestAccepted) {
                 cancelResponse.Dispose();
