@@ -130,7 +130,7 @@ namespace GameServiceWarden.Core.Games
             }
             catch (AggregateException e)
             {
-                e.Handle((exception) => exception is TaskCanceledException || exception is SocketException); //Task cancel for Windows, Socket for operation cancellation.
+                e.Handle((exception) => exception is TaskCanceledException || (exception is SocketException && exception.Message.Equals("Operation canceled"))); //Task cancel for Windows, Socket for operation cancellation.
             }
             try
             {
@@ -140,7 +140,7 @@ namespace GameServiceWarden.Core.Games
             }
             catch (AggregateException e)
             {
-                e.Handle((exception) => exception is TaskCanceledException || exception is SocketException); //Same as above.
+                e.Handle((exception) => exception is TaskCanceledException || (exception is SocketException && exception.Message.Equals("Operation canceled"))); //Same as above.
             }
             stopToken.Dispose();
         }

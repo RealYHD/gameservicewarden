@@ -17,7 +17,7 @@ namespace GameServiceWarden.Core.Tests.UI
         public void Open_Closed_Opened()
         {
             //Given
-            const string NAME = "MEDIATOR";
+            const string NAME = "Open_Closed_Opened";
             IPCMediator mediator = new IPCMediator(NAME);
             //When
             mediator.Open();
@@ -29,7 +29,7 @@ namespace GameServiceWarden.Core.Tests.UI
         public void Open_AlreadyOpened_Exception()
         {
             //Given
-            const string NAME = "MEDIATOR";
+            const string NAME = "Open_AlreadyOpened_Exception";
             IPCMediator mediator = new IPCMediator(NAME);
             //When
             mediator.Open();
@@ -41,7 +41,7 @@ namespace GameServiceWarden.Core.Tests.UI
         public void Close_Opened_Closed()
         {
             //Given
-            const string NAME = "MEDIATOR";
+            const string NAME = "Close_Opened_Closed";
             IPCMediator mediator = new IPCMediator(NAME);
             //When
             mediator.Open();

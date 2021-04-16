@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
+using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,8 +23,10 @@ namespace GameServiceWarden.Core.UI
         public BlockingCollection<(string, CommunicableType, byte[])> RequestQueue { get; private set; }
         private volatile bool active;
         public bool IsRunning { get => active; }
-        private Task acceptTask;
+        private Task connectionTask;
         private CancellationTokenSource stopAcceptingToken;
+        private volatile NamedPipeServerStream connectingPipe;
+
         public IPCMediator(string name)
         {
             this.name = name;
@@ -37,7 +40,7 @@ namespace GameServiceWarden.Core.UI
             Logger.Log($"IPCMediator with name \"{name}\" opened.");
             active = true;
             stopAcceptingToken = new CancellationTokenSource();
-            acceptTask = AcceptConnections();
+            connectionTask = AcceptConnections();
             Logger.Log($"IPCMediator \"{name}\" has begun asynchronously accepting interfaces.", LogLevel.DEBUG);
         }
 
@@ -47,15 +50,16 @@ namespace GameServiceWarden.Core.UI
             Logger.Log("Closing IPC mediator.");
             active = false;
             stopAcceptingToken.Cancel();
+            connectingPipe.Dispose();
+            InitiateDisconnectAll("Closing GameServiceWarden.").Wait();
             try
             {
-                if (!acceptTask.Wait(TIMEOUT)) throw new TimeoutException($"IPCMediator \"{name}\" was unable to stop accepting task within {TIMEOUT}ms.");
+                if (!connectionTask.Wait(TIMEOUT)) throw new TimeoutException($"IPCMediator \"{name}\" was unable to stop accepting task within {TIMEOUT}ms.");
             }
             catch (AggregateException e)
             {
-                e.Handle((exception) => exception is TaskCanceledException);
+                e.Handle((exception) => exception is TaskCanceledException || (exception is SocketException && exception.Message.Equals("Operation canceled")));
             }
-            InitiateDisconnectAll("Closing IPC system.").Wait();
             RequestQueue.CompleteAdding();
             stopAcceptingToken.Dispose();
         }
@@ -110,10 +114,10 @@ namespace GameServiceWarden.Core.UI
             Logger.Log("Accepting Interface connections.");
             while (active)
             {
-                NamedPipeServerStream pipe = new NamedPipeServerStream(PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+                connectingPipe = new NamedPipeServerStream(PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
                 Logger.Log("Waiting for connection.", LogLevel.DEBUG);
-                await pipe.WaitForConnectionAsync(stopAcceptingToken.Token);
-                connectionTasks.Add(OnConnection(pipe));
+                await connectingPipe.WaitForConnectionAsync(stopAcceptingToken.Token);
+                connectionTasks.Add(OnConnection(connectingPipe));
                 for (int i = 0; i < connectionTasks.Count; i++)
                 {
                     if (connectionTasks[i].IsCompleted) {
