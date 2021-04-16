@@ -34,7 +34,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             IService stubService = new FakeService();
             ServiceDescriptor serviceInfo = new ServiceDescriptor(stubService, SERVICE_NAME, "FakeModule", "FakeAssembly");
             serviceInfo.Start();
-            Assert.Equal(true, serviceInfo.GetServiceState());
+            Assert.True(serviceInfo.GetServiceState());
             serviceInfo.Stop();
         }
 
@@ -46,7 +46,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             ServiceDescriptor serviceInfo = new ServiceDescriptor(stubService, SERVICE_NAME, "FakeModule", "FakeAssembly");
             serviceInfo.Start();
             serviceInfo.Stop();
-            Assert.Equal(false, serviceInfo.GetServiceState());
+            Assert.False(serviceInfo.GetServiceState());
         }
 
         [Fact]
