@@ -10,6 +10,11 @@ namespace GameServiceWarden.Core.UI
     {
         private IPCMediator mediator;
 
+        public IPCPresenter(IPCMediator mediator)
+        {
+            this.mediator = mediator;
+        }
+
         public void Present(ServiceManagerState state)
         {
             Task replyTask = mediator.ReplyAll(CommunicableType.Service, JsonSerializer.SerializeToUtf8Bytes(state));
