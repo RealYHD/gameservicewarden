@@ -39,7 +39,7 @@ namespace GameServiceWarden.Core.Games
         private volatile NamedPipeClientStream logSender;
         private ConcurrentStack<NamedPipeServerStream> logStreamListeners;
         private Task logUpdateTask;
-        private Task acceptingTask;
+        private Task listenTask;
         private volatile CancellationTokenSource stopToken;
         private NamedPipeServerStream acceptingPipe;
 
@@ -99,7 +99,7 @@ namespace GameServiceWarden.Core.Games
             initializationTask.Wait();
             cancellationTokenSource.Dispose();
             stopToken = new CancellationTokenSource();
-            acceptingTask = AcceptLogConnections();
+            listenTask = AcceptLogConnections();
             logUpdateTask = BroadcastLog();
         }
 
@@ -113,13 +113,18 @@ namespace GameServiceWarden.Core.Games
             Logger.Log($"\"{ServiceName}\" is stopping.");
             service.ElegantShutdown();
             stopToken.Cancel(); // Doesn't work on Linux(?)
-            acceptingPipe.Close();
             acceptingPipe.Dispose(); //Handles Linux case
             logSender.Dispose(); //Makes sure logging client is disposed
             logReceiver.Dispose(); //Closes receiver (Linux doesn't respond to cancellations, needed to dispose either way).
+
+            NamedPipeServerStream terminatingPipe;
+            while (logStreamListeners.TryPop(out terminatingPipe))
+            {
+                terminatingPipe.Dispose(); // Required before waiting since this is under listenTask.
+            }
             try
             {
-                if (!acceptingTask.Wait(TIMEOUT)) {
+                if (!listenTask.Wait(TIMEOUT)) {
                     throw new TimeoutException($"Could not stop \"{ServiceName}\" accepting task within {TIMEOUT}ms.");
                 }
             }
@@ -137,11 +142,6 @@ namespace GameServiceWarden.Core.Games
             {
                 e.Handle((exception) => exception is TaskCanceledException || exception is SocketException); //Same as above.
             }
-            foreach (NamedPipeServerStream pipe in logStreamListeners)
-            {
-                pipe.Dispose();
-            }
-            logStreamListeners.Clear();
             stopToken.Dispose();
         }
 
