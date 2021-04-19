@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 using System.Text;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
-namespace GameServiceWarden.Core.Tests.Modules.Games
+namespace GameServiceWarden.Core.Tests.Modules
 {
     [CollectionDefinition("Service")]
     public class ServiceManagerTest

@@ -7,7 +7,7 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Text;
 
-namespace GameServiceWarden.Core.Tests.Modules.Games
+namespace GameServiceWarden.Core.Tests.Modules
 {
     // Testing convention from: https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
     // fakes are generic test objects, 

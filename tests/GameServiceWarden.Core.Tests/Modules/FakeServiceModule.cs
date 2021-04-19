@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using GameServiceWarden.API.Module;
 
-namespace GameServiceWarden.Core.Tests.Modules.Games
+namespace GameServiceWarden.Core.Tests.Modules
 {
     public class FakeServiceModule : IServiceModule
     {

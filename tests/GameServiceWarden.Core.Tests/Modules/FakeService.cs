@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using GameServiceWarden.API.Module;
 
-namespace GameServiceWarden.Core.Tests.Modules.Games
+namespace GameServiceWarden.Core.Tests.Modules
 {
     public class FakeService : IService
     {

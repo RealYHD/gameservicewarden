@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using GameServiceWarden.Core.Module;
 using GameServiceWarden.Core.Persistence;
 using GameServiceWarden.Core.Tests.Modules;
-using GameServiceWarden.Core.Tests.Modules.Games;
 using GameServiceWarden.API.Module;
 using Xunit;
 

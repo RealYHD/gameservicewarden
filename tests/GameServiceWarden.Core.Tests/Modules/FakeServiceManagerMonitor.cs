@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using GameServiceWarden.API.Games;
 using GameServiceWarden.Core.Module;
 
-namespace GameServiceWarden.Core.Tests.Modules.Games
+namespace GameServiceWarden.Core.Tests.Modules
 {
     public class FakeServiceManagerMonitor : IServiceManagerMonitor
     {

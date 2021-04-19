@@ -1,9 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
-namespace GameServiceWarden.Core.Module
+namespace GameServiceWarden.Core.Collection
 {
-    public class LRUCache<K, V>
+    public class LRUCache<K, V> : IEnumerable<V>
     {
         private class Node
         {
@@ -14,7 +15,7 @@ namespace GameServiceWarden.Core.Module
         }
 
         public int Size {get { return size; } }
-        public int Length {get { return valueDictionary.Count; } }
+        public int Count {get { return valueDictionary.Count; } }
         private readonly int size;
         private Node top;
         private Node bottom;
@@ -49,7 +50,7 @@ namespace GameServiceWarden.Core.Module
                 bottom = node;
             } else if (valueDictionary.Count == Size) {
                 valueDictionary.Remove(bottom.key);
-                cleanupAction(bottom.value);
+                cleanupAction?.Invoke(bottom.value);
                 bottom = bottom.front;
             }
             valueDictionary[key] = node;
@@ -68,10 +69,27 @@ namespace GameServiceWarden.Core.Module
             return value.value;
         }
 
+        public bool IsCached(K key) {
+            return valueDictionary.ContainsKey(key);
+        }
+
         public void Clear() {
             top = null;
             bottom = null;
             valueDictionary.Clear();
+        }
+
+        public IEnumerator<V> GetEnumerator()
+        {
+            foreach (Node node in valueDictionary.Values)
+            {
+                yield return node.value;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }
