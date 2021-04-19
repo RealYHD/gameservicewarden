@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GameServiceWarden.Core.Games;
+using GameServiceWarden.Core.Module;
 
 namespace GameServiceWarden.Core.Persistence
 {

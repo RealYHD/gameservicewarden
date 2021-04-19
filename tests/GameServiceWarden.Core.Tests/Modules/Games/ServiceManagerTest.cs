@@ -4,11 +4,12 @@ using System.IO;
 using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
-using GameServiceWarden.Core.Games;
+using GameServiceWarden.Core.Module;
 using GameServiceWarden.Core.Logging;
 using GameServiceWarden.API.Module;
 using Xunit;
 using Xunit.Abstractions;
+using System.Text;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace GameServiceWarden.Core.Tests.Modules.Games
@@ -28,7 +29,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "CreateService_NewManager_NewServiceCreated";
             FakePersistence<IReadOnlyDictionary<string, IServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IServiceModule>>();
-            FakePersistence<ServiceDescriptor> stubPersistentServiceDictionary = new FakePersistence<ServiceDescriptor>();
+            FakePersistence<IReadOnlyDictionary<string, string>> stubPersistentServiceDictionary = new FakePersistence<IReadOnlyDictionary<string, string>>();
             FakeServiceManagerMonitor stubMonitor = new FakeServiceManagerMonitor();
             ServiceManager serviceManager = new ServiceManager(stubMonitor, stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IServiceModule>();
@@ -48,7 +49,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "CreateService_OneService_ServiceDeleted";
             FakePersistence<IReadOnlyDictionary<string, IServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IServiceModule>>();
-            FakePersistence<ServiceDescriptor> stubPersistentServiceDictionary = new FakePersistence<ServiceDescriptor>();
+            FakePersistence<IReadOnlyDictionary<string, string>> stubPersistentServiceDictionary = new FakePersistence<IReadOnlyDictionary<string, string>>();
             FakeServiceManagerMonitor stubMonitor = new FakeServiceManagerMonitor();
             ServiceManager serviceManager = new ServiceManager(stubMonitor, stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IServiceModule>();
@@ -71,7 +72,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_PREFIX = "GetServiceNames_MultipleServices_AllCorrectNames_";
             FakePersistence<IReadOnlyDictionary<string, IServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IServiceModule>>();
-            FakePersistence<ServiceDescriptor> stubPersistentServiceDictionary = new FakePersistence<ServiceDescriptor>();
+            FakePersistence<IReadOnlyDictionary<string, string>> stubPersistentServiceDictionary = new FakePersistence<IReadOnlyDictionary<string, string>>();
             FakeServiceManagerMonitor stubMonitor = new FakeServiceManagerMonitor();
             ServiceManager serviceManager = new ServiceManager(stubMonitor, stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IServiceModule>();
@@ -97,7 +98,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "GetServiceOptions_ThreeOptionService_CorrectOptions";
             FakePersistence<IReadOnlyDictionary<string, IServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IServiceModule>>();
-            FakePersistence<ServiceDescriptor> stubPersistentServiceDictionary = new FakePersistence<ServiceDescriptor>();
+            FakePersistence<IReadOnlyDictionary<string, string>> stubPersistentServiceDictionary = new FakePersistence<IReadOnlyDictionary<string, string>>();
             FakeServiceManagerMonitor stubMonitor = new FakeServiceManagerMonitor();
             ServiceManager serviceManager = new ServiceManager(stubMonitor, stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IServiceModule>();
@@ -122,7 +123,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "SetandGetServiceOptionValue_OneOption_OptionChanged";
             FakePersistence<IReadOnlyDictionary<string, IServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IServiceModule>>();
-            FakePersistence<ServiceDescriptor> stubPersistentServiceDictionary = new FakePersistence<ServiceDescriptor>();
+            FakePersistence<IReadOnlyDictionary<string, string>> stubPersistentServiceDictionary = new FakePersistence<IReadOnlyDictionary<string, string>>();
             FakeServiceManagerMonitor stubMonitor = new FakeServiceManagerMonitor();
             ServiceManager serviceManager = new ServiceManager(stubMonitor, stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IServiceModule>();
@@ -145,7 +146,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "GetServiceState_NotRunning_ReturnsNotRunningState";
             FakePersistence<IReadOnlyDictionary<string, IServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IServiceModule>>();
-            FakePersistence<ServiceDescriptor> stubPersistentServiceDictionary = new FakePersistence<ServiceDescriptor>();
+            FakePersistence<IReadOnlyDictionary<string, string>> stubPersistentServiceDictionary = new FakePersistence<IReadOnlyDictionary<string, string>>();
             FakeServiceManagerMonitor stubMonitor = new FakeServiceManagerMonitor();
             ServiceManager serviceManager = new ServiceManager(stubMonitor, stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IServiceModule>();
@@ -165,7 +166,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "StartService_NotStarted_SuccessfulStart";
             FakePersistence<IReadOnlyDictionary<string, IServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IServiceModule>>();
-            FakePersistence<ServiceDescriptor> stubPersistentServiceDictionary = new FakePersistence<ServiceDescriptor>();
+            FakePersistence<IReadOnlyDictionary<string, string>> stubPersistentServiceDictionary = new FakePersistence<IReadOnlyDictionary<string, string>>();
             FakeServiceManagerMonitor stubMonitor = new FakeServiceManagerMonitor();
             ServiceManager serviceManager = new ServiceManager(stubMonitor, stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IServiceModule>();
@@ -187,7 +188,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             const string ASSEMBLY_NAME = "FakeAssembly";
             const string FAKE_SERVICE_NAME = "StopService_ServiceStartedThenStopped_StateUpdated";
             FakePersistence<IReadOnlyDictionary<string, IServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IServiceModule>>();
-            FakePersistence<ServiceDescriptor> stubPersistentServiceDictionary = new FakePersistence<ServiceDescriptor>();
+            FakePersistence<IReadOnlyDictionary<string, string>> stubPersistentServiceDictionary = new FakePersistence<IReadOnlyDictionary<string, string>>();
             FakeServiceManagerMonitor stubMonitor = new FakeServiceManagerMonitor();
             ServiceManager serviceManager = new ServiceManager(stubMonitor, stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IServiceModule>();
@@ -203,14 +204,14 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
         }
 
         [Fact]
-        public void ExecuteCommand_CommandExecutedBeforeConnected_CommandLogged()
+        public void ExecuteCommand_ServiceStarted_CommandLogged()
         {
             //Given
             const string ASSEMBLY_NAME = "FakeAssembly";
-            const string FAKE_SERVICE_NAME = "ExecuteCommand_CommandExecutedBeforeConnected_CommandLogged";
+            const string FAKE_SERVICE_NAME = "ExecuteCommand_ServiceStarted_CommandLogged";
             const string COMMAND = "TEST";
             FakePersistence<IReadOnlyDictionary<string, IServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IServiceModule>>();
-            FakePersistence<ServiceDescriptor> stubPersistentServiceDictionary = new FakePersistence<ServiceDescriptor>();
+            FakePersistence<IReadOnlyDictionary<string, string>> stubPersistentServiceDictionary = new FakePersistence<IReadOnlyDictionary<string, string>>();
             FakeServiceManagerMonitor stubMonitor = new FakeServiceManagerMonitor();
             ServiceManager serviceManager = new ServiceManager(stubMonitor, stubPersistentServiceDictionary, stubPersistentModuleDictionary);
             Dictionary<string, IServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IServiceModule>();
@@ -220,116 +221,16 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //When
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubServiceModule.Name);
             serviceManager.StartService(FAKE_SERVICE_NAME);
-            string pipeName = serviceManager.GetLogPipeNames()[FAKE_SERVICE_NAME];
-            NamedPipeClientStream clientStream = new NamedPipeClientStream(".", pipeName, PipeDirection.In);
-            serviceManager.ExecuteCommand(FAKE_SERVICE_NAME, COMMAND);
-            clientStream.Connect(1000);
-            Thread.Sleep(1000);
-            //Then
-            byte[] buffer = new byte[1024 * 8];
-            CancellationTokenSource cancelToken = new CancellationTokenSource(2000);
-            ValueTask<int> task = clientStream.ReadAsync(buffer, cancelToken.Token);
-            Assert.False(task.AsTask().Wait(1000));
-            serviceManager.StopService(FAKE_SERVICE_NAME);
-            cancelToken.Dispose();
-        }
-
-        [Fact]
-        public void ExecuteCommand_CommandExecutedAfterConnected_CommandLogged()
-        {
-            //Given
-            const string ASSEMBLY_NAME = "FakeAssembly";
-            const string FAKE_SERVICE_NAME = "ExecuteCommand_CommandExecutedAfterConnected_CommandLogged";
-            const string COMMAND = "TEST";
-            FakePersistence<IReadOnlyDictionary<string, IServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IServiceModule>>();
-            FakePersistence<ServiceDescriptor> stubPersistentServiceDictionary = new FakePersistence<ServiceDescriptor>();
-            FakeServiceManagerMonitor stubMonitor = new FakeServiceManagerMonitor();
-            ServiceManager serviceManager = new ServiceManager(stubMonitor, stubPersistentServiceDictionary, stubPersistentModuleDictionary);
-            Dictionary<string, IServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IServiceModule>();
-            IServiceModule stubServiceModule = new FakeServiceModule();
-            stubAssemblyModulesDictionary.Add(stubServiceModule.Name, stubServiceModule);
-            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
-            //When
-            serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubServiceModule.Name);
-            serviceManager.StartService(FAKE_SERVICE_NAME);
-            string pipeName = serviceManager.GetLogPipeNames()[FAKE_SERVICE_NAME];
-            NamedPipeClientStream clientStream = new NamedPipeClientStream(".", pipeName, PipeDirection.In);
-            clientStream.Connect(1000);
-            Thread.Sleep(1000);
             serviceManager.ExecuteCommand(FAKE_SERVICE_NAME, COMMAND);
             //Then
-            using (StreamReader reader = new StreamReader(clientStream))
+            using (MemoryStream mem = new MemoryStream(serviceManager.GetLogBuffer()[FAKE_SERVICE_NAME]))
             {
-                CancellationTokenSource cancelToken = new CancellationTokenSource(2000);
-                string message = null;
-                Task task = Task.Run(() => message = reader.ReadLine(), cancelToken.Token);
-                Assert.True(task.Wait(1000));
-                Assert.True(COMMAND.Equals(message), $"Received message \"{message}\" when expecting \"{COMMAND}\"");
-                cancelToken.Dispose();
-            }
-            serviceManager.StopService(FAKE_SERVICE_NAME);
-        }
-
-[Fact]
-        public void ExecuteCommand_CommandExecutedAfterMultipleLogListenersConnected_CommandLogged()
-        {
-            //Given
-            const string ASSEMBLY_NAME = "FakeAssembly";
-            const string FAKE_SERVICE_NAME = "ExecuteCommand_CommandExecutedAfterMultipleLogListenersConnected_CommandLogged";
-            const string COMMAND = "TEST";
-            FakePersistence<IReadOnlyDictionary<string, IServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IServiceModule>>();
-            FakePersistence<ServiceDescriptor> stubPersistentServiceDictionary = new FakePersistence<ServiceDescriptor>();
-            FakeServiceManagerMonitor stubMonitor = new FakeServiceManagerMonitor();
-            ServiceManager serviceManager = new ServiceManager(stubMonitor, stubPersistentServiceDictionary, stubPersistentModuleDictionary);
-            Dictionary<string, IServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IServiceModule>();
-            IServiceModule stubServiceModule = new FakeServiceModule();
-            stubAssemblyModulesDictionary.Add(stubServiceModule.Name, stubServiceModule);
-            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
-            //When
-            serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubServiceModule.Name);
-            serviceManager.StartService(FAKE_SERVICE_NAME);
-            string pipeName = serviceManager.GetLogPipeNames()[FAKE_SERVICE_NAME];
-            NamedPipeClientStream[] clientStreams = new NamedPipeClientStream[5];
-            for (int i = 0; i < clientStreams.Length; i++)
-            {
-                clientStreams[i] = new NamedPipeClientStream(".", pipeName, PipeDirection.In);
-                clientStreams[i].Connect(1000);
-            }
-            Thread.Sleep(1000);
-            serviceManager.ExecuteCommand(FAKE_SERVICE_NAME, COMMAND);
-            //Then
-            for (int i = 0; i < clientStreams.Length; i++)
-            {
-                using (StreamReader reader = new StreamReader(clientStreams[i]))
+                using (StreamReader reader = new StreamReader(mem))
                 {
-                    string message = null;
-                    Task clientTask = Task.Run(() => message = reader.ReadLine());
-                    Assert.True(clientTask.Wait(1000));
-                    Assert.True(COMMAND.Equals(message), $"Received message \"{message}\" when expecting \"{COMMAND}\"");
+                    Assert.Equal(COMMAND, reader.ReadLine());
                 }
             }
-            Task task = Task.Run(() => serviceManager.StopService(FAKE_SERVICE_NAME));
-            Assert.True(task.Wait(5000)); //TODO FIX WHY THIS IS HAPPENING!!!!!
-        }
-
-        [Fact]
-        public void GetServiceConsoleStream_ServiceStopped_ExceptionThrown()
-        {
-            //Given
-            const string ASSEMBLY_NAME = "FakeAssembly";
-            const string FAKE_SERVICE_NAME = "GetServiceConsoleStream_ServiceStopped_ExceptionThrown";
-            FakePersistence<IReadOnlyDictionary<string, IServiceModule>> stubPersistentModuleDictionary = new FakePersistence<IReadOnlyDictionary<string, IServiceModule>>();
-            FakePersistence<ServiceDescriptor> stubPersistentServiceDictionary = new FakePersistence<ServiceDescriptor>();
-            FakeServiceManagerMonitor stubMonitor = new FakeServiceManagerMonitor();
-            ServiceManager serviceManager = new ServiceManager(stubMonitor, stubPersistentServiceDictionary, stubPersistentModuleDictionary);
-            Dictionary<string, IServiceModule> stubAssemblyModulesDictionary = new Dictionary<string, IServiceModule>();
-            IServiceModule stubServiceModule = new FakeServiceModule();
-            stubAssemblyModulesDictionary.Add(stubServiceModule.Name, stubServiceModule);
-            stubPersistentModuleDictionary.AddToPersistence(ASSEMBLY_NAME, stubAssemblyModulesDictionary);
-            //When
-            serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubServiceModule.Name);
-            //Then
-            Assert.Throws<KeyNotFoundException>(() => serviceManager.GetLogPipeNames()[FAKE_SERVICE_NAME]);
+            serviceManager.StopService(FAKE_SERVICE_NAME);
         }
     }
 }

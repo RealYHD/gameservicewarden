@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GameServiceWarden.API.Games;
-using GameServiceWarden.Core.Games;
+using GameServiceWarden.Core.Module;
 
 namespace GameServiceWarden.Core.Tests.Modules.Games
 {

@@ -10,9 +10,11 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
     {
         public IReadOnlyCollection<IServiceConfigurable> Configurables { get; set; }
 
-        public event EventHandler<bool> StateChangeEvent;
-        public ServiceState CurrentState { get; private set; } = ServiceState.Stopped;
+        public event EventHandler<ServiceState> StateChangeEvent;
+        public event EventHandler<string> UpdateLogEvent;
 
+        public ServiceState CurrentState { get; private set; } = ServiceState.Stopped;
+        private MemoryStream memoryStream;
         private StreamWriter consoleWriter;
         private Stack<Task> taskStack = new Stack<Task>();
 
@@ -29,7 +31,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
         public void ElegantShutdown()
         {
             CurrentState = ServiceState.Stopped;
-            StateChangeEvent?.Invoke(this, false);
+            StateChangeEvent?.Invoke(this, ServiceState.Stopped);
             Task task;
             while(taskStack.TryPop(out task)) {
                 if (task.IsCompleted) {
@@ -44,13 +46,20 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
         {
             taskStack.Push(consoleWriter.WriteLineAsync(command));
             taskStack.Push(consoleWriter.FlushAsync());
+            UpdateLogEvent?.Invoke(this, command);
         }
 
-        public void InitializeService(Stream stream)
+        public void InitializeService()
         {
             CurrentState = ServiceState.Running;
-            this.consoleWriter = new StreamWriter(stream);
-            StateChangeEvent?.Invoke(this, true);
+            memoryStream = new MemoryStream();
+            this.consoleWriter = new StreamWriter(memoryStream);
+            StateChangeEvent?.Invoke(this, ServiceState.Running);
+        }
+
+        public byte[] GetLogBuffer()
+        {
+            return memoryStream.ToArray();
         }
     }
 }

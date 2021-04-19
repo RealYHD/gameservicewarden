@@ -6,10 +6,12 @@ namespace GameServiceWarden.API.Module
 {
     public interface IService
     {
-        event EventHandler<bool> StateChangeEvent;
+        event EventHandler<ServiceState> StateChangeEvent;
+        event EventHandler<string> UpdateLogEvent;
         IReadOnlyCollection<IServiceConfigurable> Configurables{ get; }
-        void InitializeService(Stream stream);
+        void InitializeService();
         void ElegantShutdown();
+        byte[] GetLogBuffer();
         void ExecuteCommand(string command);
     }
 }

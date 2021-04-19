@@ -9,7 +9,7 @@ namespace GameServiceWarden.API.Games
         public ICollection<string> services;
         public ICollection<string> running;
         public ICollection<string> modules;
-        public IReadOnlyDictionary<string, string> logs;
+        public IReadOnlyDictionary<string, byte[]> logs;
         public IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> serviceOptions;
     }
 }

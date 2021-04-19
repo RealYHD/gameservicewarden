@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using GameServiceWarden.Core.Games.Modules;
+using GameServiceWarden.Core.Module;
 using GameServiceWarden.API.Module;
 
 namespace GameServiceWarden.Core.Persistence
@@ -12,7 +12,7 @@ namespace GameServiceWarden.Core.Persistence
     {
         private readonly string mapDirectory;
 
-        private readonly ServiceModuleLoader loader = new ServiceModuleLoader();
+        private readonly ModuleLoader loader = new ModuleLoader();
 
         public ServiceModules(string mapDirectory)
         {

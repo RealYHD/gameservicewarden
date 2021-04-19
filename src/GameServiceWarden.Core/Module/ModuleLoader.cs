@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using GameServiceWarden.Core.Games.Modules.Exceptions;
+using GameServiceWarden.Core.Module.Exceptions;
 using GameServiceWarden.API.Module;
 
-namespace GameServiceWarden.Core.Games.Modules
+namespace GameServiceWarden.Core.Module
 {
-    public class ServiceModuleLoader //Gateway
+    public class ModuleLoader //Gateway
     {
         /// <summary>
         /// Loads an extension module.

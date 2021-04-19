@@ -23,8 +23,7 @@ namespace GameServiceWarden.API.Module
         /// Creates an instance of a the service to be used.
         /// </summary>
         /// <param name="workspace">The workspace directory. All service required files should be stored here. Expect the directory to be created.</param>
-        /// <param name="clean">Whether or not this game service is new. That is, the <code>workspace</code> can be assumed empty.</param>
         /// <returns>The <see cref="IService"/> responsible for the instance of the game service.</returns>
-        IService InstantiateService(string workspace, bool clean);
+        IService InstantiateService(string workspace);
     }
 }

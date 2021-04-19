@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using GameServiceWarden.Core.Games;
+using GameServiceWarden.Core.Module;
 using GameServiceWarden.Core.Persistence;
 
 namespace GameServiceWarden.Core.Tests.Modules

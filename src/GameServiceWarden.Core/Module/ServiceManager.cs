@@ -9,22 +9,25 @@ using System.Linq;
 using GameServiceWarden.API.Games;
 using GameServiceWarden.Core.Persistence;
 using GameServiceWarden.API.Module;
+using System.Text;
 
-namespace GameServiceWarden.Core.Games
+namespace GameServiceWarden.Core.Module
 {
     public class ServiceManager : IServiceManagerActionExecuter
     {
         private IServiceManagerMonitor managerMonitor;
         private readonly ConcurrentDictionary<string, ServiceDescriptor> running;
-        private readonly IPersistent<ServiceDescriptor> services;
+        private readonly IPersistent<IReadOnlyDictionary<string, string>> services;
+        private readonly LRUCache<string, ServiceDescriptor> descriptorCache;
         private readonly IReadOnlyPersistent<IReadOnlyDictionary<string, IServiceModule>> modules;
 
-        public ServiceManager(IServiceManagerMonitor actionMonitor, IPersistent<ServiceDescriptor> services, IReadOnlyPersistent<IReadOnlyDictionary<string, IServiceModule>> modules)
+        public ServiceManager(IServiceManagerMonitor actionMonitor, IPersistent<IReadOnlyDictionary<string, string>> services, IReadOnlyPersistent<IReadOnlyDictionary<string, IServiceModule>> modules)
         {
             this.services = services ?? throw new ArgumentNullException("services");
             this.modules = modules ?? throw new ArgumentNullException("modules");
             this.managerMonitor = actionMonitor ?? throw new ArgumentNullException("actionMonitor");
             this.running = new ConcurrentDictionary<string, ServiceDescriptor>();
+            this.descriptorCache = new LRUCache<string, ServiceDescriptor>(100);
         }
 
         public void CreateService(string serviceName, string assemblyName, string moduleName)
@@ -32,8 +35,10 @@ namespace GameServiceWarden.Core.Games
             if (!this.modules.ContainsKey(assemblyName)) throw new KeyNotFoundException($"No file \"{assemblyName}\" found.");
             IReadOnlyDictionary<string, IServiceModule> assemblyModules = this.modules[assemblyName];
             if (services.ContainsKey(serviceName)) throw new ArgumentException($"Service of Name \"{serviceName}\" already exists.");
-
-            services.AddToPersistence(serviceName, new ServiceDescriptor(assemblyModules[moduleName].InstantiateService(services.GetPathForKey(serviceName), true), serviceName, moduleName, assemblyName));
+            Dictionary<string, string> data = new Dictionary<string, string>();
+            data[ServiceDescriptor.ASSEMBLY_PROPERTY] = assemblyName;
+            data[ServiceDescriptor.MODULE_PROPERTY] = moduleName;
+            services.AddToPersistence(serviceName, data);
             ServiceManagerState managerState = new ServiceManagerState();
             managerState.delta = true;
             managerState.subtract = false;
@@ -45,7 +50,7 @@ namespace GameServiceWarden.Core.Games
         public void DeleteService(string serviceName)
         {
             if (!services.ContainsKey(serviceName)) throw new KeyNotFoundException($"Service under name \"{serviceName}\" not found.");
-            if (services[serviceName].GetServiceState()) services[serviceName].Stop();
+            if (running.ContainsKey(serviceName)) running[serviceName].Stop();
             services.Delete(serviceName);
             ServiceManagerState managerState = new ServiceManagerState();
             managerState.delta = true;
@@ -81,15 +86,18 @@ namespace GameServiceWarden.Core.Games
         private IEnumerable<string> GetServiceOptions(string serviceName)
         {
             if (!services.ContainsKey(serviceName)) throw new KeyNotFoundException($"Service under name \"{serviceName}\" not found.");
-            ServiceDescriptor serviceInfo = services[serviceName];
-            return serviceInfo.GetConfigurableOptions();
+            IReadOnlyDictionary<string, string> info = services[serviceName];
+            ServiceDescriptor service = descriptorCache.Use(serviceName, () => GenerateDescriptor(serviceName, info[ServiceDescriptor.ASSEMBLY_PROPERTY], info[ServiceDescriptor.MODULE_PROPERTY]));
+            return service.GetConfigurableOptions();
         }
 
         private string GetServiceOptionValue(string serviceName, string optionName)
         {
             if (!services.ContainsKey(serviceName)) throw new KeyNotFoundException($"Service under name \"{serviceName}\" not found.");
-            if (!services[serviceName].GetConfigurableOptions().Contains(optionName)) throw new KeyNotFoundException($"Option \"{optionName}\" for service \"{serviceName}\" not found.");
-            return services[serviceName].GetConfigurableValue(optionName);
+            IReadOnlyDictionary<string, string> info = services[serviceName];
+            ServiceDescriptor service = descriptorCache.Use(serviceName, () => GenerateDescriptor(serviceName, info[ServiceDescriptor.ASSEMBLY_PROPERTY], info[ServiceDescriptor.MODULE_PROPERTY]));
+            if (!service.GetConfigurableOptions().Contains(optionName)) throw new KeyNotFoundException($"Option \"{optionName}\" for service \"{serviceName}\" not found.");
+            return service.GetConfigurableValue(optionName);
         }
 
         public IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> GetOptions() {
@@ -112,9 +120,11 @@ namespace GameServiceWarden.Core.Games
         public bool SetServiceOptionValue(string serviceName, string optionName, string value)
         {
             if (!services.ContainsKey(serviceName)) throw new KeyNotFoundException($"Service under name \"{serviceName}\" not found.");
-            if (!services[serviceName].GetConfigurableOptions().Contains(optionName)) throw new KeyNotFoundException($"Option \"{optionName}\" for service \"{serviceName}\" not found.");
+            IReadOnlyDictionary<string, string> info = services[serviceName];
+            ServiceDescriptor service = descriptorCache.Use(serviceName, () => GenerateDescriptor(serviceName, info[ServiceDescriptor.ASSEMBLY_PROPERTY], info[ServiceDescriptor.MODULE_PROPERTY]));
+            if (!service.GetConfigurableOptions().Contains(optionName)) throw new KeyNotFoundException($"Option \"{optionName}\" for service \"{serviceName}\" not found.");
             ServiceManagerState managerState = new ServiceManagerState();
-            if (services[serviceName].SetConfigurableValue(optionName, value)) {
+            if (service.SetConfigurableValue(optionName, value)) {
                 managerState.delta = true;
                 Dictionary<string, IReadOnlyDictionary<string, string>> changedOption = new Dictionary<string, IReadOnlyDictionary<string, string>>();
                 Dictionary<string, string> options = new Dictionary<string, string>();
@@ -130,9 +140,11 @@ namespace GameServiceWarden.Core.Games
         {
             if (!services.ContainsKey(serviceName)) throw new KeyNotFoundException($"Service under name \"{serviceName}\" not found.");
             if (running.ContainsKey(serviceName)) throw new InvalidOperationException($"Service under name \"{serviceName}\" is already running.");
-            ServiceDescriptor info = services[serviceName];
-            info.ServiceStateChangeEvent += OnServiceStateChange;
-            info.Start();
+            IReadOnlyDictionary<string, string> info = services[serviceName];
+            ServiceDescriptor service = descriptorCache.Use(serviceName, () => GenerateDescriptor(serviceName, info[ServiceDescriptor.ASSEMBLY_PROPERTY], info[ServiceDescriptor.MODULE_PROPERTY]));
+            service.ServiceStateChangeEvent += OnServiceStateChange;
+            service.LogUpdateEvent += OnLogUpdated;
+            service.Start();
         }
 
         public void StopService(string serviceName)
@@ -147,57 +159,69 @@ namespace GameServiceWarden.Core.Games
             running[serviceName].ExecuteCommand(command);
         }
 
-        private string GetServiceLogPipeName(string serviceName)
-        {
-            if (!running.ContainsKey(serviceName)) throw new InvalidOperationException($"Service under name \"{serviceName}\" is not running.");
-            return running[serviceName].ServiceLogPipeName;
+        private byte[] GetServiceLogBuffer(string serviceName) {
+            if (!running.ContainsKey(serviceName)) throw new InvalidOperationException($"Service under name \"{serviceName}\" is not running and therefore, does not have a log.");
+            IReadOnlyDictionary<string, string> info = services[serviceName];
+            ServiceDescriptor service = descriptorCache.Use(serviceName, () => GenerateDescriptor(serviceName, info[ServiceDescriptor.ASSEMBLY_PROPERTY], info[ServiceDescriptor.MODULE_PROPERTY]));
+            return service.GetLogBuffer();
         }
 
-        public IReadOnlyDictionary<string, string> GetLogPipeNames() {
-            ServiceManagerState managerState = new ServiceManagerState();
-            Dictionary<string, string> logPipeNames = new Dictionary<string, string>();
-            foreach (string service in GetRunningServiceNames())
+        public Dictionary<string, byte[]> GetLogBuffer() {
+            Dictionary<string, byte[]> logs = new Dictionary<string, byte[]>();
+            foreach (string service in running.Keys)
             {
-                logPipeNames.Add(service, GetServiceLogPipeName(service));
+                logs.Add(service, running[service].GetLogBuffer());
             }
-            managerState.logs = logPipeNames;
+            ServiceManagerState managerState = new ServiceManagerState();
+            managerState.logs = logs;
             managerMonitor.Present(managerState);
-            return logPipeNames;
+            return logs;
         }
 
-        private void OnServiceStateChange(object sender, bool state) {
+        private ServiceDescriptor GenerateDescriptor(string name, string assembly, string module) {
+            return new ServiceDescriptor(modules[assembly][module].InstantiateService(services.GetPathForKey(name)), name, module, assembly);
+        }
+
+        private void OnServiceStateChange(object sender, ServiceState state) {
             ServiceDescriptor serviceInfo = (ServiceDescriptor)sender;
             ServiceManagerState managerChange = new ServiceManagerState();
 
             switch (state)
             {
-                case true:
+                case ServiceState.Running:
                     if (running.TryAdd(serviceInfo.ServiceName, serviceInfo)) {
                         managerChange.delta = true;
                         managerChange.running = new List<string>();
                         managerChange.running.Add(serviceInfo.ServiceName);
-                        Dictionary<string, string> logAdded = new Dictionary<string, string>();
-                        logAdded.Add(serviceInfo.ServiceName, GetServiceLogPipeName(serviceInfo.ServiceName));
-                        managerChange.logs = logAdded;
                     }
                     break;
-                case false:
+                case ServiceState.Stopped:
                     ServiceDescriptor removed;
                     if (running.TryRemove(serviceInfo.ServiceName, out removed)) {
                         removed.ServiceStateChangeEvent -= OnServiceStateChange;
-                        services[serviceInfo.ServiceName] = removed;
+                        removed.LogUpdateEvent -= OnLogUpdated;
+                        Dictionary<string, string> removedInfo = new Dictionary<string, string>();
+                        removedInfo[ServiceDescriptor.ASSEMBLY_PROPERTY] = removed.GetAssemblyName();
+                        removedInfo[ServiceDescriptor.MODULE_PROPERTY] = removed.GetModuleName();
+                        services[serviceInfo.ServiceName] = removedInfo;
                         managerChange.delta = true;
                         managerChange.subtract = true;
                         managerChange.running = new List<string>();
                         managerChange.running.Add(serviceInfo.ServiceName);
-                        Dictionary<string, string> logRemoved = new Dictionary<string, string>();
-                        logRemoved.Add(serviceInfo.ServiceName, null);
-                        managerChange.logs = logRemoved;
                     }
                     break;
             }
 
             managerMonitor.Present(managerChange);
+        }
+
+        void OnLogUpdated(object sender, string update) {
+            ServiceDescriptor service = (ServiceDescriptor)sender;
+            ServiceManagerState state = new ServiceManagerState();
+            state.delta = true;
+            Dictionary<string, string> logUpdate = new Dictionary<string, string>();
+            logUpdate[service.ServiceName] = update;
+            managerMonitor.Present(state);
         }
 
         public void ExecuteAction(ServiceManagerAction action)
@@ -208,7 +232,7 @@ namespace GameServiceWarden.Core.Games
                     GetServiceNames();
                     GetRunningServiceNames();
                     GetModuleNames();
-                    GetLogPipeNames();
+                    GetLogBuffer();
                     GetOptions();
                     break;
 

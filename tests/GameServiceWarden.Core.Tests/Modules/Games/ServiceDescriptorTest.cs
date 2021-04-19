@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
-using GameServiceWarden.Core.Games;
+using GameServiceWarden.Core.Module;
 using GameServiceWarden.Core.Logging;
 using GameServiceWarden.API.Module;
 using Xunit;
 using Xunit.Abstractions;
+using System.Text;
 
 namespace GameServiceWarden.Core.Tests.Modules.Games
 {
@@ -34,7 +35,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             IService stubService = new FakeService();
             ServiceDescriptor serviceInfo = new ServiceDescriptor(stubService, SERVICE_NAME, "FakeModule", "FakeAssembly");
             serviceInfo.Start();
-            Assert.True(serviceInfo.GetServiceState());
+            Assert.Equal(ServiceState.Running, serviceInfo.GetServiceState());
             serviceInfo.Stop();
         }
 
@@ -46,7 +47,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             ServiceDescriptor serviceInfo = new ServiceDescriptor(stubService, SERVICE_NAME, "FakeModule", "FakeAssembly");
             serviceInfo.Start();
             serviceInfo.Stop();
-            Assert.False(serviceInfo.GetServiceState());
+            Assert.Equal(ServiceState.Stopped, serviceInfo.GetServiceState());
         }
 
         [Fact]
@@ -89,7 +90,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             IService stubService = new FakeService();
             ServiceDescriptor serviceInfo = new ServiceDescriptor(stubService, SERVICE_NAME, "FakeModule", "FakeAssembly");
             //Then
-            Assert.False(serviceInfo.GetServiceState());
+            Assert.Equal(ServiceState.Stopped, serviceInfo.GetServiceState());
         }
 
         [Fact]
@@ -102,7 +103,7 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
             //When
             serviceInfo.Start();
             //Then
-            Assert.True(serviceInfo.GetServiceState());
+            Assert.Equal(ServiceState.Running, serviceInfo.GetServiceState());
             serviceInfo.Stop();
         }
 
@@ -143,28 +144,24 @@ namespace GameServiceWarden.Core.Tests.Modules.Games
         }
 
         [Fact]
-        public void ServiceLogPipeName_ServiceNotStarted_PipeNameReturned()
+        public void GetLogBuffer_CommandWritten_CommandLogged()
         {
             //Given
-            const string SERVICE_NAME = "ServiceLogPipeName_ServiceNotStarted_PipeNameReturned";
+            const string CMD = "hello";
+            const string SERVICE_NAME = "GetLogBuffer_CommandWritten_CommandLogged";
             IService stubService = new FakeService();
             ServiceDescriptor serviceInfo = new ServiceDescriptor(stubService, SERVICE_NAME, "FakeModule", "FakeAssembly");
-            //Then
-            Assert.NotNull(serviceInfo.ServiceLogPipeName);
-        }
-
-        [Fact]
-        public void ServiceLogPipeName_ServiceStarted_StreamReturned()
-        {
-            //Given
-            const string SERVICE_NAME = "ServiceLogPipeName_ServiceStarted_StreamReturned";
-            IService stubService = new FakeService();
-            ServiceDescriptor serviceInfo = new ServiceDescriptor(stubService, SERVICE_NAME, "FakeModule", "FakeAssembly");
-            //When
             serviceInfo.Start();
+            //When
+            serviceInfo.ExecuteCommand(CMD);
             //Then
-            Assert.NotNull(serviceInfo.ServiceLogPipeName);
-            serviceInfo.Stop();
+            using (MemoryStream mem = new MemoryStream(serviceInfo.GetLogBuffer()))
+            {
+                using (StreamReader reader = new StreamReader(mem))
+                {
+                    Assert.Equal(CMD, reader.ReadLine());
+                }
+            }
         }
     }
 }

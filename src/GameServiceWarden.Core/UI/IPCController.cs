@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using GameServiceWarden.API.Communicable;
 using GameServiceWarden.API.Communicable.Requests;
-using GameServiceWarden.Core.Games;
+using GameServiceWarden.Core.Module;
 using GameServiceWarden.Core.Logging;
 
 namespace GameServiceWarden.Core.UI

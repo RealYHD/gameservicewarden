@@ -1,6 +1,6 @@
 using GameServiceWarden.API.Games;
 
-namespace GameServiceWarden.Core.Games
+namespace GameServiceWarden.Core.Module
 {
     public interface IServiceManagerActionExecuter
     {

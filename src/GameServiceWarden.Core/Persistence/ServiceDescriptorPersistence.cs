@@ -3,39 +3,36 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using GameServiceWarden.Core.Games;
+using GameServiceWarden.Core.Module;
 using GameServiceWarden.API.Module;
+using System.Collections.ObjectModel;
 
 namespace GameServiceWarden.Core.Persistence
 {
-    public class ServiceDescriptorPersistence : IPersistent<ServiceDescriptor>
+    public class ServiceDescriptorPersistence : IPersistent<IReadOnlyDictionary<string, string>>
     {
-        private readonly IReadOnlyPersistent<IReadOnlyDictionary<string, IServiceModule>> modules;
         private readonly string mapDirectory;
-        private const string ASSEMBLY_NAME = "Assembly Name";
-        private const string MODULE_NAME = "Module Name";
         private const string EXTENSION = ".sin";
 
 
-        public ServiceDescriptorPersistence(string mapDirectory, IReadOnlyPersistent<IReadOnlyDictionary<string, IServiceModule>> modules)
+        public ServiceDescriptorPersistence(string mapDirectory)
         {
             this.mapDirectory = mapDirectory;
-            this.modules = modules;
         }
 
-        public ServiceDescriptor this[string key]
+        public IReadOnlyDictionary<string, string> this[string key]
         {
             set
             {
-                SaveService(key, value.GetAssemblyName(), value.GetModuleName());
+                SaveService(key, value[ServiceDescriptor.ASSEMBLY_PROPERTY], value[ServiceDescriptor.MODULE_PROPERTY]);
             }
             get
             {
                 if (!ContainsKey(key)) throw new KeyNotFoundException();
-                string assemblyName = GetServiceInfoValue(key, ASSEMBLY_NAME);
-                string moduleName = GetServiceInfoValue(key, MODULE_NAME);
-                IService service = modules[assemblyName][moduleName].InstantiateService(GetPathForKey(key), false);
-                return new ServiceDescriptor(service, key, moduleName, assemblyName);
+                Dictionary<string, string> info = new Dictionary<string, string>();
+                info[ServiceDescriptor.ASSEMBLY_PROPERTY] = GetServiceInfoValue(key, ServiceDescriptor.ASSEMBLY_PROPERTY);
+                info[ServiceDescriptor.MODULE_PROPERTY] = GetServiceInfoValue(key, ServiceDescriptor.MODULE_PROPERTY);
+                return new ReadOnlyDictionary<string, string>(info);
             }
         }
 
@@ -51,10 +48,10 @@ namespace GameServiceWarden.Core.Persistence
             }
         }
 
-        public IEnumerable<ServiceDescriptor> Values {
+        public IEnumerable<IReadOnlyDictionary<string,string>> Values {
             get {
                 IEnumerable<string> keys = Keys;
-                List<ServiceDescriptor> res = new List<ServiceDescriptor>();
+                List<IReadOnlyDictionary<string,string>> res = new List<IReadOnlyDictionary<string,string>>();
                 foreach (string key in keys)
                 {
                     res.Add(this[key]);
@@ -75,7 +72,7 @@ namespace GameServiceWarden.Core.Persistence
             }
         }
 
-        public void AddToPersistence(string key, ServiceDescriptor value)
+        public void AddToPersistence(string key, IReadOnlyDictionary<string,string> value)
         {
             if (key == null) throw new ArgumentNullException();
             if (ContainsKey(key)) throw new ArgumentException();
@@ -96,13 +93,13 @@ namespace GameServiceWarden.Core.Persistence
             return Directory.Exists(GetPathForKey(key));
         }
 
-        public IEnumerator<KeyValuePair<string, ServiceDescriptor>> GetEnumerator()
+        public IEnumerator<KeyValuePair<string, IReadOnlyDictionary<string,string>>> GetEnumerator()
         {
             IEnumerable<string> keys = Keys;
-            List<KeyValuePair<string, ServiceDescriptor>> result = new List<KeyValuePair<string, ServiceDescriptor>>();
+            List<KeyValuePair<string, IReadOnlyDictionary<string,string>>> result = new List<KeyValuePair<string, IReadOnlyDictionary<string,string>>>();
             foreach (string key in keys)
             {
-                result.Add(new KeyValuePair<string, ServiceDescriptor>(key, this[key]));
+                result.Add(new KeyValuePair<string, IReadOnlyDictionary<string,string>>(key, this[key]));
             }
             return result.GetEnumerator();
         }
@@ -127,7 +124,7 @@ namespace GameServiceWarden.Core.Persistence
             return true;
         }
 
-        public bool TryLoadValue(string key, [MaybeNullWhen(false)] out ServiceDescriptor value)
+        public bool TryLoadValue(string key, [MaybeNullWhen(false)] out IReadOnlyDictionary<string,string> value)
         {
             try {
                 value = this[key];
@@ -152,8 +149,8 @@ namespace GameServiceWarden.Core.Persistence
             Directory.CreateDirectory(serviceInfoPath);
             using (StreamWriter writer = File.CreateText(Path.Combine(serviceInfoPath, key + EXTENSION)))
             {
-                writer.WriteLine($"{ASSEMBLY_NAME}: {assemblyName}");
-                writer.WriteLine($"{MODULE_NAME}: {moduleName}");
+                writer.WriteLine($"{ServiceDescriptor.ASSEMBLY_PROPERTY}: {assemblyName}");
+                writer.WriteLine($"{ServiceDescriptor.MODULE_PROPERTY}: {moduleName}");
             }
         }
 

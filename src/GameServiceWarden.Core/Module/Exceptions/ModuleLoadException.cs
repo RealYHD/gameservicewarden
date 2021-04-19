@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace GameServiceWarden.Core.Games.Modules.Exceptions
+namespace GameServiceWarden.Core.Module.Exceptions
 {
     [System.Serializable]
     public class ModuleLoadException : Exception

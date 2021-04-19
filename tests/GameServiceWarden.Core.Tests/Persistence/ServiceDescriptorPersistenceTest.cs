@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using GameServiceWarden.Core.Games;
+using GameServiceWarden.Core.Module;
 using GameServiceWarden.Core.Persistence;
 using GameServiceWarden.Core.Tests.Modules;
 using GameServiceWarden.Core.Tests.Modules.Games;
@@ -28,7 +28,7 @@ namespace GameServiceWarden.Core.Tests.Persistence
             stubAssemblyDict[MODULE_NAME] = stubServiceModule;
             stubModulesPersistence[ASSEMBLY_NAME] = stubAssemblyDict;
 
-            ServiceDescriptorPersistence persistedServices = new ServiceDescriptorPersistence(TEST_DIR, stubModulesPersistence);
+            ServiceDescriptorPersistence persistedServices = new ServiceDescriptorPersistence(TEST_DIR);
 
             //Then
             Assert.True(persistedServices.GetPathForKey(SERVICE_NAME).Equals(Path.Combine(TEST_DIR, SERVICE_NAME)));
@@ -49,11 +49,14 @@ namespace GameServiceWarden.Core.Tests.Persistence
             stubAssemblyDict[MODULE_NAME] = stubServiceModule;
             stubModulesPersistence[ASSEMBLY_NAME] = stubAssemblyDict;
 
-            ServiceDescriptorPersistence persistedServiceInfos = new ServiceDescriptorPersistence(TEST_DIR, stubModulesPersistence);
+            ServiceDescriptorPersistence persistedServiceInfos = new ServiceDescriptorPersistence(TEST_DIR);
 
-            ServiceDescriptor stubServiceInfo = new ServiceDescriptor(stubModulesPersistence[ASSEMBLY_NAME][MODULE_NAME].InstantiateService(persistedServiceInfos.GetPathForKey(SERVICE_NAME), true), SERVICE_NAME, MODULE_NAME, ASSEMBLY_NAME);
+            ServiceDescriptor stubServiceInfo = new ServiceDescriptor(stubModulesPersistence[ASSEMBLY_NAME][MODULE_NAME].InstantiateService(persistedServiceInfos.GetPathForKey(SERVICE_NAME)), SERVICE_NAME, MODULE_NAME, ASSEMBLY_NAME);
             //When
-            persistedServiceInfos[SERVICE_NAME] = stubServiceInfo;
+            Dictionary<string, string> info = new Dictionary<string, string>();
+            info[ServiceDescriptor.MODULE_PROPERTY] = MODULE_NAME;
+            info[ServiceDescriptor.ASSEMBLY_PROPERTY] = ASSEMBLY_NAME;
+            persistedServiceInfos[SERVICE_NAME] = info;
             //Then
             Assert.True(Directory.Exists(TEST_DIR));
             Assert.True(Directory.Exists(persistedServiceInfos.GetPathForKey(SERVICE_NAME)));
@@ -79,15 +82,19 @@ namespace GameServiceWarden.Core.Tests.Persistence
             stubAssemblyDict[MODULE_NAME] = stubServiceModule;
             stubModulesPersistence[ASSEMBLY_NAME] = stubAssemblyDict;
 
-            ServiceDescriptorPersistence persistedServices = new ServiceDescriptorPersistence(TEST_DIR, stubModulesPersistence);
+            ServiceDescriptorPersistence persistedServices = new ServiceDescriptorPersistence(TEST_DIR);
 
-            ServiceDescriptor stubServiceInfo = new ServiceDescriptor(stubModulesPersistence[ASSEMBLY_NAME][MODULE_NAME].InstantiateService(persistedServices.GetPathForKey(SERVICE_NAME), true), SERVICE_NAME, MODULE_NAME, ASSEMBLY_NAME);
-            persistedServices[SERVICE_NAME] = stubServiceInfo;
+            Dictionary<string, string> info = new Dictionary<string, string>();
+            info[ServiceDescriptor.MODULE_PROPERTY] = MODULE_NAME;
+            info[ServiceDescriptor.ASSEMBLY_PROPERTY] = ASSEMBLY_NAME;
+            persistedServices[SERVICE_NAME] = info;
             //When
-            ServiceDescriptor loadedService = persistedServices[SERVICE_NAME];
+            IReadOnlyDictionary<string, string> loadedServiceInfo = persistedServices[SERVICE_NAME];
+            string loadedAssemblyName = loadedServiceInfo[ServiceDescriptor.ASSEMBLY_PROPERTY];
+            string loadedModuleName = loadedServiceInfo[ServiceDescriptor.MODULE_PROPERTY];
             //Then
-            Assert.True(loadedService.GetModuleName().Equals(MODULE_NAME));
-            Assert.True(loadedService.GetAssemblyName().Equals(ASSEMBLY_NAME));
+            Assert.True(loadedModuleName.Equals(MODULE_NAME));
+            Assert.True(loadedAssemblyName.Equals(ASSEMBLY_NAME));
 
             Directory.Delete(TEST_DIR, true);
         }

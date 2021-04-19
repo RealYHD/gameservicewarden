@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Runtime.Loader;
 
-namespace GameServiceWarden.Core.Games.Modules
+namespace GameServiceWarden.Core.Module
 {
     class ModuleLoadContext : AssemblyLoadContext
     {

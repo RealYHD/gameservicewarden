@@ -4,5 +4,6 @@ namespace GameServiceWarden.API.Module
     {
         Stopped,
         Running, 
+        RestartPending
     }
 }
