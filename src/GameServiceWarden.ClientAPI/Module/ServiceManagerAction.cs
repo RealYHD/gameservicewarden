@@ -11,7 +11,6 @@ namespace GameServiceWarden.ClientAPI.Module
             DeleteService,
             ExecuteCommand,
             SetServiceOption,
-            View
         }
 
         public string assemblyName;

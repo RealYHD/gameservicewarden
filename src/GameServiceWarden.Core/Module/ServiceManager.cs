@@ -6,6 +6,7 @@ using GameServiceWarden.ClientAPI.Module;
 using GameServiceWarden.Core.Persistence;
 using GameServiceWarden.ModuleAPI;
 using GameServiceWarden.Core.Collection;
+using System.Text;
 
 namespace GameServiceWarden.Core.Module
 {
@@ -35,11 +36,9 @@ namespace GameServiceWarden.Core.Module
             data[ServiceDescriptor.ASSEMBLY_PROPERTY] = assemblyName;
             data[ServiceDescriptor.MODULE_PROPERTY] = moduleName;
             services.AddToPersistence(serviceName, data);
-            ServiceManagerState managerState = new ServiceManagerState();
-            managerState.delta = true;
+            ServiceManagerDelta managerState = new ServiceManagerDelta();
             managerState.subtract = false;
-            managerState.services = new List<string>();
-            managerState.services.Add(serviceName);
+            managerState.service = serviceName;
             managerMonitor.Present(managerState);
         }
 
@@ -48,17 +47,15 @@ namespace GameServiceWarden.Core.Module
             if (!services.ContainsKey(serviceName)) throw new KeyNotFoundException($"Service under name \"{serviceName}\" not found.");
             if (running.ContainsKey(serviceName)) running[serviceName].Stop();
             services.Delete(serviceName);
-            ServiceManagerState managerState = new ServiceManagerState();
-            managerState.delta = true;
+            ServiceManagerDelta managerState = new ServiceManagerDelta();
             managerState.subtract = true;
-            managerState.services = new List<string>();
-            managerState.services.Add(serviceName);
+            managerState.service = serviceName;
             managerMonitor.Present(managerState);
         }
 
         public IEnumerable<string> GetModuleNames()
         {
-            ServiceManagerState managerState = new ServiceManagerState();
+            ServiceManagerTotal managerState = new ServiceManagerTotal();
             managerState.modules = modules.Keys.ToImmutableArray();
             managerMonitor.Present(managerState);
             return modules.Keys;
@@ -66,14 +63,14 @@ namespace GameServiceWarden.Core.Module
 
         public IEnumerable<string> GetServiceNames()
         {
-            ServiceManagerState managerState = new ServiceManagerState();
+            ServiceManagerTotal managerState = new ServiceManagerTotal();
             managerState.services = services.Keys.ToImmutableArray();
             managerMonitor.Present(managerState);
             return services.Keys;
         }
 
         public IEnumerable<string> GetRunningServiceNames() {
-            ServiceManagerState managerState = new ServiceManagerState();
+            ServiceManagerTotal managerState = new ServiceManagerTotal();
             managerState.running = running.Keys.ToImmutableArray();
             managerMonitor.Present(managerState);
             return running.Keys;
@@ -97,7 +94,7 @@ namespace GameServiceWarden.Core.Module
         }
 
         public IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> GetOptions() {
-            ServiceManagerState managerState = new ServiceManagerState();
+            ServiceManagerTotal managerState = new ServiceManagerTotal();
             Dictionary<string, IReadOnlyDictionary<string, string>> serviceOptions = new Dictionary<string, IReadOnlyDictionary<string, string>>();
             foreach (string service in GetServiceNames())
             {
@@ -119,17 +116,14 @@ namespace GameServiceWarden.Core.Module
             IReadOnlyDictionary<string, string> info = services[serviceName];
             ServiceDescriptor service = descriptorCache.Use(serviceName, () => GenerateDescriptor(serviceName, info[ServiceDescriptor.ASSEMBLY_PROPERTY], info[ServiceDescriptor.MODULE_PROPERTY]));
             if (!service.GetConfigurableOptions().Contains(optionName)) throw new KeyNotFoundException($"Option \"{optionName}\" for service \"{serviceName}\" not found.");
-            ServiceManagerState managerState = new ServiceManagerState();
+            ServiceManagerDelta managerState = new ServiceManagerDelta();
             if (service.SetConfigurableValue(optionName, value)) {
-                managerState.delta = true;
-                Dictionary<string, IReadOnlyDictionary<string, string>> changedOption = new Dictionary<string, IReadOnlyDictionary<string, string>>();
-                Dictionary<string, string> options = new Dictionary<string, string>();
-                options[optionName] = GetServiceOptionValue(serviceName, optionName);
-                changedOption[serviceName] = options;
-                managerState.serviceOptions = changedOption;
+                managerState.optionName = optionName;
+                managerState.optionValue = GetServiceOptionValue(serviceName, optionName);
+                managerMonitor.Present(managerState);
+                return true;
             }
-            managerMonitor.Present(managerState);
-            return managerState.delta;
+            return false;
         }
 
         public void StartService(string serviceName)
@@ -168,7 +162,7 @@ namespace GameServiceWarden.Core.Module
             {
                 logs.Add(service, running[service].GetLogBuffer());
             }
-            ServiceManagerState managerState = new ServiceManagerState();
+            ServiceManagerTotal managerState = new ServiceManagerTotal();
             managerState.logs = logs;
             managerMonitor.Present(managerState);
             return logs;
@@ -180,15 +174,13 @@ namespace GameServiceWarden.Core.Module
 
         private void OnServiceStateChange(object sender, ServiceState state) {
             ServiceDescriptor serviceInfo = (ServiceDescriptor)sender;
-            ServiceManagerState managerChange = new ServiceManagerState();
+            ServiceManagerDelta managerChange = new ServiceManagerDelta();
 
             switch (state)
             {
                 case ServiceState.Running:
                     if (running.TryAdd(serviceInfo.ServiceName, serviceInfo)) {
-                        managerChange.delta = true;
-                        managerChange.running = new List<string>();
-                        managerChange.running.Add(serviceInfo.ServiceName);
+                        managerChange.running = serviceInfo.ServiceName;
                     }
                     break;
                 case ServiceState.Stopped:
@@ -200,10 +192,8 @@ namespace GameServiceWarden.Core.Module
                         removedInfo[ServiceDescriptor.ASSEMBLY_PROPERTY] = removed.GetAssemblyName();
                         removedInfo[ServiceDescriptor.MODULE_PROPERTY] = removed.GetModuleName();
                         services[serviceInfo.ServiceName] = removedInfo;
-                        managerChange.delta = true;
                         managerChange.subtract = true;
-                        managerChange.running = new List<string>();
-                        managerChange.running.Add(serviceInfo.ServiceName);
+                        managerChange.running = serviceInfo.ServiceName;
                     }
                     break;
             }
@@ -213,25 +203,15 @@ namespace GameServiceWarden.Core.Module
 
         void OnLogUpdated(object sender, string update) {
             ServiceDescriptor service = (ServiceDescriptor)sender;
-            ServiceManagerState state = new ServiceManagerState();
-            state.delta = true;
-            Dictionary<string, string> logUpdate = new Dictionary<string, string>();
-            logUpdate[service.ServiceName] = update;
-            managerMonitor.Present(state);
+            ServiceManagerDelta delta = new ServiceManagerDelta();
+            delta.logs = Encoding.UTF8.GetBytes(update);
+            managerMonitor.Present(delta);
         }
 
         public void ExecuteAction(ServiceManagerAction action)
         {
             switch (action.action)
             {
-                case ServiceManagerAction.Type.View:
-                    GetServiceNames();
-                    GetRunningServiceNames();
-                    GetModuleNames();
-                    GetLogBuffer();
-                    GetOptions();
-                    break;
-
                 case ServiceManagerAction.Type.CreateService:
                     CreateService(action.serviceName, action.assemblyName, action.moduleName);
                     break;
@@ -253,6 +233,15 @@ namespace GameServiceWarden.Core.Module
                     StopService(action.serviceName);
                     break;
             }
+        }
+
+        public void ViewState()
+        {
+            GetServiceNames();
+            GetRunningServiceNames();
+            GetModuleNames();
+            GetLogBuffer();
+            GetOptions();
         }
     }
 }

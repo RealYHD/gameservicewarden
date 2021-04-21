@@ -6,7 +6,8 @@ namespace GameServiceWarden.ClientAPI
     {
         Disconnect,
         Connect,
-        Service,
+        View,
+        Delta,
         UnexpectedCommunication
     }
 }

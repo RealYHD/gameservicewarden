@@ -4,6 +4,7 @@ namespace GameServiceWarden.Core.Module
 {
     public interface IServiceManagerMonitor
     {
-        void Present(ServiceManagerState state);
+        void Present(ServiceManagerTotal state);
+        void Present(ServiceManagerDelta delta);
     }
 }

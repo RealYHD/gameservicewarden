@@ -1,10 +1,8 @@
-namespace GameServiceWarden.ClientAPI.Responses
+namespace GameServiceWarden.ClientAPI.Communicable.Responses
 {
-    public struct UnexpectedRequestResponse : ICommunicable
+    public struct UnexpectedRequestResponse
     {
         public CommunicableType origin;
         public string message;
-
-        public CommunicableType Type => CommunicableType.UnexpectedCommunication;
     }
 }

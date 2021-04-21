@@ -2,10 +2,8 @@ using System.Collections.Generic;
 
 namespace GameServiceWarden.ClientAPI.Module
 {
-    public struct ServiceManagerState
+    public struct ServiceManagerTotal
     {
-        public bool delta;
-        public bool subtract;
         public ICollection<string> services;
         public ICollection<string> running;
         public ICollection<string> modules;

@@ -8,8 +8,8 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using GameServiceWarden.ClientAPI;
-using GameServiceWarden.ClientAPI.Requests;
-using GameServiceWarden.ClientAPI.Responses;
+using GameServiceWarden.ClientAPI.Communicable.Requests;
+using GameServiceWarden.ClientAPI.Communicable.Responses;
 using GameServiceWarden.Core.Logging;
 
 namespace GameServiceWarden.Core.UI

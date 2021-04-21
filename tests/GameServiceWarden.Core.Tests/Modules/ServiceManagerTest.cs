@@ -1,15 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Pipes;
-using System.Threading;
-using System.Threading.Tasks;
 using GameServiceWarden.Core.Module;
 using GameServiceWarden.Core.Logging;
 using GameServiceWarden.ModuleAPI;
 using Xunit;
 using Xunit.Abstractions;
-using System.Text;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace GameServiceWarden.Core.Tests.Modules
@@ -39,7 +34,7 @@ namespace GameServiceWarden.Core.Tests.Modules
             //When
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubServiceModule.Name);
             //Then
-            Assert.Contains<string>(FAKE_SERVICE_NAME, stubMonitor.GetLastState().services);
+            Assert.True(FAKE_SERVICE_NAME.Equals(stubMonitor.GetLastDelta().service));
         }
 
         [Fact]
@@ -60,9 +55,8 @@ namespace GameServiceWarden.Core.Tests.Modules
             serviceManager.CreateService(FAKE_SERVICE_NAME, ASSEMBLY_NAME, stubServiceModule.Name);
             serviceManager.DeleteService(FAKE_SERVICE_NAME);
             //Then
-            Assert.True(stubMonitor.GetLastState().delta);
-            Assert.True(stubMonitor.GetLastState().subtract);
-            Assert.Contains(FAKE_SERVICE_NAME, stubMonitor.GetLastState().services);
+            Assert.True(stubMonitor.GetLastDelta().subtract);
+            Assert.True(FAKE_SERVICE_NAME.Equals(stubMonitor.GetLastDelta().service));
         }
 
         [Fact]

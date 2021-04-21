@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Text.Json;
 using GameServiceWarden.ClientAPI;
-using GameServiceWarden.ClientAPI.Requests;
+using GameServiceWarden.ClientAPI.Communicable.Requests;
 using GameServiceWarden.Core.Module;
 using GameServiceWarden.Core.Logging;
 
@@ -26,9 +26,13 @@ namespace GameServiceWarden.Core.UI
             {
                 switch (action.Item2)
                 {
-                    case CommunicableType.Service:
-                        ServiceRequest request = JsonSerializer.Deserialize<ServiceRequest>(action.Item3);
-                        serviceExecutioner.ExecuteAction(request.serviceManagerAction);
+                    case CommunicableType.Delta:
+                        ServiceRequest delta = JsonSerializer.Deserialize<ServiceRequest>(action.Item3);
+                        serviceExecutioner.ExecuteAction(delta.serviceManagerAction);
+                        break;
+                    case CommunicableType.View:
+                        ViewRequest view = JsonSerializer.Deserialize<ViewRequest>(action.Item3);
+                        serviceExecutioner.ViewState();
                         break;
                 }
             }

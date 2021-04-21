@@ -15,9 +15,16 @@ namespace GameServiceWarden.Core.UI
             this.mediator = mediator;
         }
 
-        public void Present(ServiceManagerState state)
+        public void Present(ServiceManagerTotal state)
         {
-            Task replyTask = mediator.ReplyAll(CommunicableType.Service, JsonSerializer.SerializeToUtf8Bytes(state));
+            Task replyTask = mediator.ReplyAll(CommunicableType.View, JsonSerializer.SerializeToUtf8Bytes(state));
+            replyTask.Wait();
+        }
+
+        public void Present(ServiceManagerDelta delta)
+        {
+            Task replyTask = mediator.ReplyAll(CommunicableType.Delta, JsonSerializer.SerializeToUtf8Bytes(delta));
+            replyTask.Wait();
         }
     }
 }
