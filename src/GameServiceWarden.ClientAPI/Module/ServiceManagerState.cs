@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace GameServiceWarden.API.Games
+namespace GameServiceWarden.ClientAPI.Module
 {
     public struct ServiceManagerState
     {

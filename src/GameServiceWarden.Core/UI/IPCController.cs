@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Text.Json;
-using GameServiceWarden.API.Communicable;
-using GameServiceWarden.API.Communicable.Requests;
+using GameServiceWarden.ClientAPI;
+using GameServiceWarden.ClientAPI.Requests;
 using GameServiceWarden.Core.Module;
 using GameServiceWarden.Core.Logging;
 

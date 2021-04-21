@@ -1,4 +1,4 @@
-namespace GameServiceWarden.API.Communicable
+namespace GameServiceWarden.ClientAPI
 {
     public struct DisconnectResponse
     {

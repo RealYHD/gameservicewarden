@@ -1,6 +1,6 @@
-using GameServiceWarden.API.Games;
+using GameServiceWarden.ClientAPI.Module;
 
-namespace GameServiceWarden.API.Communicable.Responses
+namespace GameServiceWarden.ClientAPI.Responses
 {
     public struct ServiceResponse : ICommunicable
     {

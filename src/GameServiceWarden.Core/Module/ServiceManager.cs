@@ -2,9 +2,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using GameServiceWarden.API.Games;
+using GameServiceWarden.ClientAPI.Module;
 using GameServiceWarden.Core.Persistence;
-using GameServiceWarden.API.Module;
+using GameServiceWarden.ModuleAPI;
 using GameServiceWarden.Core.Collection;
 
 namespace GameServiceWarden.Core.Module

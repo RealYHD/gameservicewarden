@@ -3,7 +3,7 @@ using System.IO;
 using GameServiceWarden.Core.Module;
 using GameServiceWarden.Core.Persistence;
 using GameServiceWarden.Core.Tests.Modules;
-using GameServiceWarden.API.Module;
+using GameServiceWarden.ModuleAPI;
 using Xunit;
 
 namespace GameServiceWarden.Core.Tests.Persistence

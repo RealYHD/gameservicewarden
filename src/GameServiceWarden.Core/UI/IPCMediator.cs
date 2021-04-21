@@ -7,9 +7,9 @@ using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using GameServiceWarden.API.Communicable;
-using GameServiceWarden.API.Communicable.Requests;
-using GameServiceWarden.API.Communicable.Responses;
+using GameServiceWarden.ClientAPI;
+using GameServiceWarden.ClientAPI.Requests;
+using GameServiceWarden.ClientAPI.Responses;
 using GameServiceWarden.Core.Logging;
 
 namespace GameServiceWarden.Core.UI

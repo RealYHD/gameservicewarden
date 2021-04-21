@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace GameServiceWarden.API.Module
+namespace GameServiceWarden.ModuleAPI
 {
     public interface IService
     {

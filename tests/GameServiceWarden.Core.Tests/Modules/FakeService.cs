@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using GameServiceWarden.API.Module;
+using GameServiceWarden.ModuleAPI;
 
 namespace GameServiceWarden.Core.Tests.Modules
 {

@@ -1,4 +1,4 @@
-namespace GameServiceWarden.API.Module
+namespace GameServiceWarden.ModuleAPI
 {
     public interface IServiceConfigurable
     {

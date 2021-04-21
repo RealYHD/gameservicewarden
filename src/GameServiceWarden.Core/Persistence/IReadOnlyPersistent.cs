@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using GameServiceWarden.API.Module;
+using GameServiceWarden.ModuleAPI;
 
 namespace GameServiceWarden.Core.Persistence
 {

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Threading.Tasks;
-using GameServiceWarden.API.Communicable;
-using GameServiceWarden.API.Games;
+using GameServiceWarden.ClientAPI;
+using GameServiceWarden.ClientAPI.Module;
 using GameServiceWarden.Core.Module;
 
 namespace GameServiceWarden.Core.UI

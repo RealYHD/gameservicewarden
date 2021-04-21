@@ -1,4 +1,4 @@
-namespace GameServiceWarden.API.Communicable.Responses
+namespace GameServiceWarden.ClientAPI.Responses
 {
     public struct UnexpectedRequestResponse : ICommunicable
     {

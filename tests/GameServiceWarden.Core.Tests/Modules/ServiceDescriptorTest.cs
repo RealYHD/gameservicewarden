@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using GameServiceWarden.Core.Module;
 using GameServiceWarden.Core.Logging;
-using GameServiceWarden.API.Module;
+using GameServiceWarden.ModuleAPI;
 using Xunit;
 using Xunit.Abstractions;
 using System.Text;

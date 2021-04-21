@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GameServiceWarden.API.Module;
+using GameServiceWarden.ModuleAPI;
 
 namespace GameServiceWarden.Core.Tests.Modules
 {

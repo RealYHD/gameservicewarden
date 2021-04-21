@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using GameServiceWarden.Core.Module.Exceptions;
-using GameServiceWarden.API.Module;
+using GameServiceWarden.ModuleAPI;
 
 namespace GameServiceWarden.Core.Module
 {

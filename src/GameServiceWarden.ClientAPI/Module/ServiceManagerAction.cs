@@ -1,4 +1,4 @@
-namespace GameServiceWarden.API.Games
+namespace GameServiceWarden.ClientAPI.Module
 {
     public struct ServiceManagerAction
     {
