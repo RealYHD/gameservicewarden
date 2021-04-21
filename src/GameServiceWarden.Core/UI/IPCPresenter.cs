@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Threading.Tasks;
-using GameServiceWarden.ClientAPI;
-using GameServiceWarden.ClientAPI.Module;
+using GameServiceWarden.InteractionAPI;
+using GameServiceWarden.InteractionAPI.Module;
 using GameServiceWarden.Core.Module;
 
 namespace GameServiceWarden.Core.UI

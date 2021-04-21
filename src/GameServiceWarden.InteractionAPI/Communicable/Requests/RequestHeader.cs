@@ -1,7 +1,7 @@
 using System;
 using System.IO.Pipes;
 
-namespace GameServiceWarden.ClientAPI.Communicable.Requests
+namespace GameServiceWarden.InteractionAPI.Communicable.Requests
 {
     public static class RequestHeader
     {

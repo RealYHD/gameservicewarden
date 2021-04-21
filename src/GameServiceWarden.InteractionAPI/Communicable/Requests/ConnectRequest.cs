@@ -1,4 +1,4 @@
-namespace GameServiceWarden.ClientAPI.Communicable.Requests
+namespace GameServiceWarden.InteractionAPI.Communicable.Requests
 {
     public struct ConnectRequest
     {

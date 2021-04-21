@@ -1,6 +1,6 @@
 using System;
 
-namespace GameServiceWarden.ClientAPI.Communicable.Responses
+namespace GameServiceWarden.InteractionAPI.Communicable.Responses
 {
     public static class ResponseHeader
     {

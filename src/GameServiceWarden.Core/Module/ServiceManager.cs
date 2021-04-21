@@ -2,7 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using GameServiceWarden.ClientAPI.Module;
+using GameServiceWarden.InteractionAPI.Module;
 using GameServiceWarden.Core.Persistence;
 using GameServiceWarden.ModuleAPI;
 using GameServiceWarden.Core.Collection;

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using GameServiceWarden.ClientAPI.Module;
+using GameServiceWarden.InteractionAPI.Module;
 using GameServiceWarden.Core.Module;
 
 namespace GameServiceWarden.Core.Tests.Modules

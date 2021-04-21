@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace GameServiceWarden.ClientAPI.Module
+namespace GameServiceWarden.InteractionAPI.Module
 {
     public struct ServiceManagerTotal
     {

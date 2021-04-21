@@ -1,6 +1,6 @@
 using System.Security.Cryptography.X509Certificates;
 
-namespace GameServiceWarden.ClientAPI.Communicable.Responses
+namespace GameServiceWarden.InteractionAPI.Communicable.Responses
 {
     public struct ConnectResponse
     {

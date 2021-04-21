@@ -1,6 +1,6 @@
 using System;
 
-namespace GameServiceWarden.ClientAPI
+namespace GameServiceWarden.InteractionAPI
 {
     public enum CommunicableType : uint
     {

@@ -1,4 +1,4 @@
-using GameServiceWarden.ClientAPI.Module;
+using GameServiceWarden.InteractionAPI.Module;
 
 namespace GameServiceWarden.Core.Module
 {

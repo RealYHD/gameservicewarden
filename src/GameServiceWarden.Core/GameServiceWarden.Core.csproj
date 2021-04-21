@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GameServiceWarden.ModuleAPI\GameServiceWarden.ModuleAPI.csproj" />
-    <ProjectReference Include="..\GameServiceWarden.ClientAPI\GameServiceWarden.ClientAPI.csproj" />
+    <ProjectReference Include="..\GameServiceWarden.InteractionAPI\GameServiceWarden.InteractionAPI.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
