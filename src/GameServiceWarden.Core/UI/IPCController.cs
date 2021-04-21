@@ -31,7 +31,6 @@ namespace GameServiceWarden.Core.UI
                         serviceExecutioner.ExecuteAction(delta.serviceManagerAction);
                         break;
                     case CommunicableType.View:
-                        ViewRequest view = JsonSerializer.Deserialize<ViewRequest>(action.Item3);
                         serviceExecutioner.View();
                         break;
                 }
