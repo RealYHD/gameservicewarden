@@ -217,7 +217,7 @@ namespace GameServiceWarden.Core.Tests.Modules
             serviceManager.StartService(FAKE_SERVICE_NAME);
             serviceManager.ExecuteCommand(FAKE_SERVICE_NAME, COMMAND);
             //Then
-            using (MemoryStream mem = new MemoryStream(serviceManager.GetLogBuffer()[FAKE_SERVICE_NAME]))
+            using (MemoryStream mem = new MemoryStream(serviceManager.GetLogBuffers()[FAKE_SERVICE_NAME]))
             {
                 using (StreamReader reader = new StreamReader(mem))
                 {

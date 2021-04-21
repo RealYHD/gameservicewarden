@@ -15,8 +15,8 @@ namespace GameServiceWarden.Core.Module
         private IServiceManagerMonitor managerMonitor;
         private readonly ConcurrentDictionary<string, ServiceDescriptor> running;
         private readonly IPersistent<IReadOnlyDictionary<string, string>> services;
-        private readonly LRUCache<string, ServiceDescriptor> descriptorCache;
         private readonly IReadOnlyPersistent<IReadOnlyDictionary<string, IServiceModule>> modules;
+        private readonly LRUCache<string, ServiceDescriptor> descriptorCache;
 
         public ServiceManager(IServiceManagerMonitor actionMonitor, IPersistent<IReadOnlyDictionary<string, string>> services, IReadOnlyPersistent<IReadOnlyDictionary<string, IServiceModule>> modules)
         {
@@ -156,7 +156,7 @@ namespace GameServiceWarden.Core.Module
             return service.GetLogBuffer();
         }
 
-        public Dictionary<string, byte[]> GetLogBuffer() {
+        public IReadOnlyDictionary<string, byte[]> GetLogBuffers() {
             Dictionary<string, byte[]> logs = new Dictionary<string, byte[]>();
             foreach (string service in running.Keys)
             {
@@ -235,12 +235,12 @@ namespace GameServiceWarden.Core.Module
             }
         }
 
-        public void ViewState()
+        public void View()
         {
             GetServiceNames();
             GetRunningServiceNames();
             GetModuleNames();
-            GetLogBuffer();
+            GetLogBuffers();
             GetOptions();
         }
     }

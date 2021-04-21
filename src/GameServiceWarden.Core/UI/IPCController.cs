@@ -32,7 +32,7 @@ namespace GameServiceWarden.Core.UI
                         break;
                     case CommunicableType.View:
                         ViewRequest view = JsonSerializer.Deserialize<ViewRequest>(action.Item3);
-                        serviceExecutioner.ViewState();
+                        serviceExecutioner.View();
                         break;
                 }
             }
