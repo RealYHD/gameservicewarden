@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using GameServiceWarden.Core.Module;
-using GameServiceWarden.ModuleAPI;
+using GameServiceWarden.ModuleFramework;
 
 namespace GameServiceWarden.Core.Persistence
 {

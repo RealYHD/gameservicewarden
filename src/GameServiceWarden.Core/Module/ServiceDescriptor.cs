@@ -11,7 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GameServiceWarden.Core.Module.Exceptions;
 using GameServiceWarden.Core.Logging;
-using GameServiceWarden.ModuleAPI;
+using GameServiceWarden.ModuleFramework;
 using System.Net.Sockets;
 
 //TODO Update UML

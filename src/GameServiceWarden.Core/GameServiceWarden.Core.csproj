@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\GameServiceWarden.ModuleAPI\GameServiceWarden.ModuleAPI.csproj" />
+    <ProjectReference Include="..\GameServiceWarden.ModuleFramework\GameServiceWarden.ModuleFramework.csproj" />
     <ProjectReference Include="..\GameServiceWarden.InteractionAPI\GameServiceWarden.InteractionAPI.csproj" />
   </ItemGroup>
 

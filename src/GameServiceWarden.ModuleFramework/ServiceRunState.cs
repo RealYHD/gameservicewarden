@@ -1,4 +1,4 @@
-namespace GameServiceWarden.ModuleAPI
+namespace GameServiceWarden.ModuleFramework
 {
     public enum ServiceState
     {

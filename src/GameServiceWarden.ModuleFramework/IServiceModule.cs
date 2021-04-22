@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace GameServiceWarden.ModuleAPI
+namespace GameServiceWarden.ModuleFramework
 {
     public interface IServiceModule
     {

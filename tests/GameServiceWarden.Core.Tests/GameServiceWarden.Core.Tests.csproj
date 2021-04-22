@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\GameServiceWarden.Core\GameServiceWarden.Core.csproj" />
-    <ProjectReference Include="..\..\src\GameServiceWarden.ModuleAPI\GameServiceWarden.ModuleAPI.csproj" />
+    <ProjectReference Include="..\..\src\GameServiceWarden.ModuleFramework\GameServiceWarden.ModuleFramework.csproj" />
   </ItemGroup>
 
 </Project>

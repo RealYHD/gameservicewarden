@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using GameServiceWarden.InteractionAPI.Module;
 using GameServiceWarden.Core.Persistence;
-using GameServiceWarden.ModuleAPI;
+using GameServiceWarden.ModuleFramework;
 using GameServiceWarden.Core.Collection;
 using System.Text;
 

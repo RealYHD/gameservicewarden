@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using GameServiceWarden.Core.Module;
-using GameServiceWarden.ModuleAPI;
+using GameServiceWarden.ModuleFramework;
 using System.Collections.ObjectModel;
 
 namespace GameServiceWarden.Core.Persistence
