@@ -1,12 +1,12 @@
 using System;
-using GameServiceWarden.Core.Logging;
+using SimpleLogger;
 using Xunit.Abstractions;
 
 namespace GameServiceWarden.Core.Tests
 {
     public class XUnitLogger : ILogReceiver
     {
-        public LogLevel Level => LogLevel.DEBUG;
+        public LogLevel Level => LogLevel.Debug;
 
         public string Identifier => GetType().Name;
 

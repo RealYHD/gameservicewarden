@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using GameServiceWarden.InteractionAPI;
 using GameServiceWarden.InteractionAPI.Communicable.Requests;
 using GameServiceWarden.InteractionAPI.Communicable.Responses;
-using GameServiceWarden.Core.Logging;
+using SimpleLogger;
 
 namespace GameServiceWarden.Core.UI
 {
@@ -41,7 +41,7 @@ namespace GameServiceWarden.Core.UI
             active = true;
             stopAcceptingToken = new CancellationTokenSource();
             connectionTask = AcceptConnections();
-            Logger.Log($"IPCMediator \"{name}\" has begun asynchronously accepting interfaces.", LogLevel.DEBUG);
+            Logger.Log($"IPCMediator \"{name}\" has begun asynchronously accepting interfaces.", LogLevel.Debug);
         }
 
         public void Close()
@@ -115,7 +115,7 @@ namespace GameServiceWarden.Core.UI
             while (active)
             {
                 connectingPipe = new NamedPipeServerStream(PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
-                Logger.Log("Waiting for connection.", LogLevel.DEBUG);
+                Logger.Log("Waiting for connection.", LogLevel.Debug);
                 await connectingPipe.WaitForConnectionAsync(stopAcceptingToken.Token);
                 connectionTasks.Add(OnConnection(connectingPipe));
                 for (int i = 0; i < connectionTasks.Count; i++)
@@ -127,7 +127,7 @@ namespace GameServiceWarden.Core.UI
                     }
                 }
             }
-            Logger.Log("Waiting for connection tasks.", LogLevel.DEBUG);
+            Logger.Log("Waiting for connection tasks.", LogLevel.Debug);
             foreach (Task task in connectionTasks)
             {
                 task.Wait();
@@ -137,7 +137,7 @@ namespace GameServiceWarden.Core.UI
 
         private async Task OnConnection(NamedPipeServerStream pipe)
         {
-            Logger.Log("Interface attempting to connect.", LogLevel.DEBUG);
+            Logger.Log("Interface attempting to connect.", LogLevel.Debug);
             byte[] headerBuffer = new byte[sizeof(uint) * 2];
             int headerFill = 0;
             CancellationTokenSource headerCancel = new CancellationTokenSource(TIMEOUT);
@@ -153,13 +153,13 @@ namespace GameServiceWarden.Core.UI
             catch (AggregateException e)
             {
                 e.Handle((exception) => exception is TaskCanceledException);
-                Logger.Log($"Interface did not send header data within {TIMEOUT}ms.", LogLevel.DEBUG);
+                Logger.Log($"Interface did not send header data within {TIMEOUT}ms.", LogLevel.Debug);
             } finally {
                 await pipe.DisposeAsync();
                 headerCancel.Dispose();
             }
             if (headerFill != headerBuffer.Length) {
-                Logger.Log($"Interface failed to send header data.", LogLevel.DEBUG);
+                Logger.Log($"Interface failed to send header data.", LogLevel.Debug);
                 return;
             }
 
@@ -182,13 +182,13 @@ namespace GameServiceWarden.Core.UI
             catch (AggregateException e)
             {
                 e.Handle((exception) => exception is TaskCanceledException);
-                Logger.Log($"Interface failed to send body data within {TIMEOUT}.", LogLevel.DEBUG);
+                Logger.Log($"Interface failed to send body data within {TIMEOUT}.", LogLevel.Debug);
             } finally {
                 await pipe.DisposeAsync();
                 bodyCancel.Dispose();
             }
             if (bodyFill != bodyBuffer.Length) {
-                Logger.Log($"Interface failed to send body data.", LogLevel.DEBUG);
+                Logger.Log($"Interface failed to send body data.", LogLevel.Debug);
                 return;
             }
 
@@ -199,12 +199,12 @@ namespace GameServiceWarden.Core.UI
             if (string.IsNullOrWhiteSpace(request.requestedIdentifier)) {
                 response.invalidName = true;
                 response.errorMsg = $"The requested identifier \"{request.requestedIdentifier}\" is null or whitespace.";
-                Logger.Log(response.errorMsg, LogLevel.DEBUG);
+                Logger.Log(response.errorMsg, LogLevel.Debug);
             } else if (pipes.ContainsKey(request.requestedIdentifier)) {
                 response.invalidName = true;
                 response.nameTaken = true;
                 response.errorMsg = $"Interface requested identifier \"{request.requestedIdentifier}\" is taken.";
-                Logger.Log(response.errorMsg, LogLevel.DEBUG);
+                Logger.Log(response.errorMsg, LogLevel.Debug);
             } else {
                 requestAccepted = true;
                 response.identifier = request.requestedIdentifier;
@@ -217,7 +217,7 @@ namespace GameServiceWarden.Core.UI
             catch (AggregateException e)
             {
                 e.Handle((exception) => exception is TaskCanceledException);
-                Logger.Log($"Interface did not receive response within {TIMEOUT}ms.", LogLevel.DEBUG);
+                Logger.Log($"Interface did not receive response within {TIMEOUT}ms.", LogLevel.Debug);
             }
             if (!requestAccepted) {
                 cancelResponse.Dispose();
@@ -232,7 +232,7 @@ namespace GameServiceWarden.Core.UI
 
         private async Task Listen(string identifier, NamedPipeServerStream pipe)
         {
-            Logger.Log($"Started listening to interface \"{identifier}\".", LogLevel.DEBUG);
+            Logger.Log($"Started listening to interface \"{identifier}\".", LogLevel.Debug);
             byte[] buffer = new byte[1024];
             byte[] headerBuffer = new byte[sizeof(uint) * 2];
             byte[] bodyBuffer = null;
@@ -274,11 +274,11 @@ namespace GameServiceWarden.Core.UI
                     }
                 }
             }
-            Logger.Log($"Pipe for interface \"{identifier}\" has closed.", LogLevel.DEBUG);
+            Logger.Log($"Pipe for interface \"{identifier}\" has closed.", LogLevel.Debug);
             (NamedPipeServerStream, Task) removedPipe;
             pipes.TryRemove(identifier, out removedPipe);
             await removedPipe.Item1.DisposeAsync();
-            Logger.Log($"Stopped listening to interface \"{identifier}\".", LogLevel.DEBUG);
+            Logger.Log($"Stopped listening to interface \"{identifier}\".", LogLevel.Debug);
         }
     }
 }

@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GameServiceWarden.ModuleFramework\GameServiceWarden.ModuleFramework.csproj" />
     <ProjectReference Include="..\GameServiceWarden.InteractionAPI\GameServiceWarden.InteractionAPI.csproj" />
+    <ProjectReference Include="..\..\SimpleLogger\SimpleLogger.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

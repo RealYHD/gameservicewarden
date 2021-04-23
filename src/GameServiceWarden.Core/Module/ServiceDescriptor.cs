@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GameServiceWarden.Core.Module.Exceptions;
-using GameServiceWarden.Core.Logging;
+using SimpleLogger;
 using GameServiceWarden.ModuleFramework;
 using System.Net.Sockets;
 
@@ -90,7 +90,7 @@ namespace GameServiceWarden.Core.Module
         /// <exception cref="InvalidOperationException">Is thrown when the service is not running.</exception>
         public void ExecuteCommand(string command)
         {
-            Logger.Log($"\"{ServiceName}\" is executing command \"{command}\".", LogLevel.DEBUG);
+            Logger.Log($"\"{ServiceName}\" is executing command \"{command}\".", LogLevel.Debug);
             if (state != ServiceState.Running) throw new InvalidOperationException("Service instance not running.");
             service.ExecuteCommand(command);
         }
@@ -145,7 +145,7 @@ namespace GameServiceWarden.Core.Module
         private void OnServiceStateChange(object sender, ServiceState state)
         {
             this.state = state;
-            Logger.Log($"The service \"{ServiceName}\" is changing states to {this.state}.", LogLevel.DEBUG);
+            Logger.Log($"The service \"{ServiceName}\" is changing states to {this.state}.", LogLevel.Debug);
             ServiceStateChangeEvent?.Invoke(this, this.state);
         }
 
