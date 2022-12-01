@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\GameServiceWarden.Core\GameServiceWarden.Core.csproj" />
-    <ProjectReference Include="..\..\src\GameServiceWarden.ModuleFramework\GameServiceWarden.ModuleFramework.csproj" />
+    <ProjectReference Include="..\..\GameServiceWarden\GameServiceWarden.Core\GameServiceWarden.Core.csproj" />
+    <ProjectReference Include="..\..\GameServiceWarden\GameServiceWarden.ModuleFramework\GameServiceWarden.ModuleFramework.csproj" />
     <ProjectReference Include="..\..\SimpleLogger\SimpleLogger.csproj" />
   </ItemGroup>
 
