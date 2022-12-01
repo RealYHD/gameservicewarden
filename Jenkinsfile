@@ -4,7 +4,7 @@ pipeline {
         stage ("Install") {
             steps {
                 sh "mamba env update --file environment.yml"
-                sh "echo 'mamba activate props' >> ~/.bashrc"
+                sh "echo 'mamba activate gameservicewarden' >> ~/.bashrc"
                 sh "dotnet restore GameServiceWarden"
                 sh "dotnet restore GameServiceWarden.Tests"
             }

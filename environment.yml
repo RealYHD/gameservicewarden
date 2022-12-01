@@ -1,0 +1,5 @@
+name: gameservicewarden
+channels:
+  - conda-forge
+dependencies:
+  - dotnet-sdk=7.0.*
