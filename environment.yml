@@ -4,3 +4,6 @@ channels:
 dependencies:
   - dotnet
   - icu
+  - tar
+  - zip
+  - nodejs
