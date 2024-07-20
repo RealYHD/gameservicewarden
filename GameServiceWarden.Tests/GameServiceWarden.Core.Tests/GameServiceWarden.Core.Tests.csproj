@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -17,7 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\GameServiceWarden\GameServiceWarden.Core\GameServiceWarden.Core.csproj" />
     <ProjectReference Include="..\..\GameServiceWarden\GameServiceWarden.ModuleFramework\GameServiceWarden.ModuleFramework.csproj" />
-    <ProjectReference Include="..\..\SimpleLogger\SimpleLogger.csproj" />
   </ItemGroup>
 
 </Project>

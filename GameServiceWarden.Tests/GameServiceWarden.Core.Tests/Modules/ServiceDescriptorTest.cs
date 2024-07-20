@@ -4,7 +4,6 @@ using GameServiceWarden.Core.Module;
 using GameServiceWarden.ModuleFramework;
 using Xunit;
 using Xunit.Abstractions;
-using SimpleLogger;
 
 namespace GameServiceWarden.Core.Tests.Modules
 {

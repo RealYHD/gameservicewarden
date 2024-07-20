@@ -3,7 +3,6 @@ using System.Text.Json;
 using GameServiceWarden.InteractionAPI;
 using GameServiceWarden.InteractionAPI.Communicable.Requests;
 using GameServiceWarden.Core.Module;
-using SimpleLogger;
 
 namespace GameServiceWarden.Core.UI
 {

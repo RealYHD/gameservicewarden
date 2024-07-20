@@ -1,18 +1,21 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            cloud 'Reslate Systems'
+            defaultContainer 'conda'
+        }
+    }
     stages {
         stage ("Install") {
             steps {
-                sh "mamba env update --file environment.yml"
-                sh "echo 'mamba activate gameservicewarden' >> ~/.bashrc"
-                sh "git submodule update --init --recursive"
-                sh "dotnet restore GameServiceWarden"
-                sh "dotnet restore GameServiceWarden.Tests"
+                sh "conda update conda -y -q"
+                sh "conda env update -n base --file environment.yml"
+                sh "conda run -n base dotnet restore gameservicewarden.sln"
             }
         }
         stage ("Test") {
             steps {
-                sh "dotnet test --logger xunit --no-restore GameServiceWarden.Tests"
+                sh "conda run -n base dotnet test --logger xunit --no-restore GameServiceWarden.Tests"
                 xunit([xUnitDotNet(excludesPattern: '', pattern: 'GameServiceWarden.Tests/*.Tests/TestResults/*.xml', stopProcessingIfError: true)])
             }
         }

@@ -1,0 +1,30 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/anaconda
+{
+	"name": "Anaconda (Python 3)",
+	"build": { 
+		"context": "..",
+		"dockerfile": "Dockerfile"
+	},
+
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-dotnettools.vscode-dotnet-runtime",
+				"svelte.svelte-vscode",
+				"syler.sass-indented",
+				"dbaeumer.vscode-eslint",
+				"ms-dotnettools.csharp"
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "/opt/conda/bin/python",
+				"dotnet.dotnetPath": "/opt/conda/lib/dotnet/",
+				"omnisharp.dotNetCliPaths": [
+					"/opt/conda/lib/dotnet/dotnet"
+				]
+			}
+		}
+	},
+
+	"postCreateCommand": "bash -i -c 'conda init'"
+}

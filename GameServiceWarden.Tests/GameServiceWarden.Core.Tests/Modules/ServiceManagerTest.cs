@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using GameServiceWarden.Core.Module;
-using SimpleLogger;
 using GameServiceWarden.ModuleFramework;
 using Xunit;
 using Xunit.Abstractions;

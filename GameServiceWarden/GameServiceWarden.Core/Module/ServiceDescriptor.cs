@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GameServiceWarden.Core.Module.Exceptions;
-using SimpleLogger;
 using GameServiceWarden.ModuleFramework;
 using System.Net.Sockets;
 

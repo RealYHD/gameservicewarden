@@ -1,5 +1,4 @@
 using System;
-using SimpleLogger;
 using GameServiceWarden.Core.UI;
 using Xunit;
 using Xunit.Abstractions;

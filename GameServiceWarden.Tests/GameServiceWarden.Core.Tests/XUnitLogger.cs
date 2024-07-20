@@ -1,5 +1,4 @@
 using System;
-using SimpleLogger;
 using Xunit.Abstractions;
 
 namespace GameServiceWarden.Core.Tests

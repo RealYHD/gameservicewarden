@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using GameServiceWarden.InteractionAPI;
 using GameServiceWarden.InteractionAPI.Communicable.Requests;
 using GameServiceWarden.InteractionAPI.Communicable.Responses;
-using SimpleLogger;
 
 namespace GameServiceWarden.Core.UI
 {
