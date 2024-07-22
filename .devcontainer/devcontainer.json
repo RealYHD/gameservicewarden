@@ -14,7 +14,8 @@
 				"svelte.svelte-vscode",
 				"syler.sass-indented",
 				"dbaeumer.vscode-eslint",
-				"ms-dotnettools.csharp"
+				"ms-dotnettools.csharp",
+				"hediet.vscode-drawio"
 			],
 			"settings": {
 				"python.defaultInterpreterPath": "/opt/conda/bin/python",
@@ -24,7 +25,6 @@
 				]
 			}
 		}
-	},
+	}
 
-	"postCreateCommand": "bash -i -c 'conda init'"
 }
